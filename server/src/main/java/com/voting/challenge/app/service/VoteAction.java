@@ -3,6 +3,7 @@ package com.voting.challenge.app.service;
 import com.voting.challenge.app.interfaces.VoteAct;
 import com.voting.challenge.app.repository.MemberRepository;
 import com.voting.challenge.app.repository.VotingSessionRepository;
+import com.voting.challenge.app.util.SecurityUtil;
 import com.voting.challenge.domain.Member;
 import com.voting.challenge.domain.Vote;
 import com.voting.challenge.domain.VotingSession;
@@ -13,7 +14,6 @@ import com.voting.challenge.exception.SessionClosedException;
 import com.voting.challenge.exception.SessionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,7 @@ public class VoteAction implements VoteAct {
     private final VotingSessionRepository votingSessionRepository;
 
     public void vote(final VoteRequest voteRequest) {
-        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        final String username = SecurityUtil.getCPF();
         log.info("Vote request received from user: {}", username);
 
         final Member loggedUser = memberRepository.findOneByCpf(username);

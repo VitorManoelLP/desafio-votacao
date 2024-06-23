@@ -1,6 +1,9 @@
 package com.voting.challenge.infra.configuration;
 
 import com.voting.challenge.app.repository.MemberRepository;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +28,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private static final String[] WHITE_LIST = {
+            "/api/auth/**",
+            "/api-docs/**",
+            "/swagger-ui/**"
+    };
 
     private final JwtAuthFilter jwtAuthFilter;
 
@@ -65,7 +74,7 @@ public class WebSecurityConfig {
 
     @SneakyThrows
     private void configureRequestMatchers(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry request) {
-        request.requestMatchers("/api/auth/**", "/api-docs/**", "/swagger-ui/**").permitAll()
+        request.requestMatchers(WHITE_LIST).permitAll()
                 .anyRequest()
                 .authenticated();
     }

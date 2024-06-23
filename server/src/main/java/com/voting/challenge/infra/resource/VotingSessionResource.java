@@ -5,14 +5,18 @@ import com.voting.challenge.app.interfaces.ReportVote;
 import com.voting.challenge.app.interfaces.SessionView;
 import com.voting.challenge.app.interfaces.VoteAct;
 import com.voting.challenge.domain.payload.*;
+import com.voting.challenge.infra.configuration.WebSecurityConfig;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.startup.WebAnnotationSet;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/session")
+@SecurityRequirement(name = "Authorization")
 public class VotingSessionResource {
 
     private final InitializeSession initializeSession;

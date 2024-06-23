@@ -7,6 +7,7 @@ import com.voting.challenge.domain.payload.MemberInfo;
 import com.voting.challenge.domain.payload.TokenResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,8 @@ public class AuthResource {
     @PostMapping("/new")
     @ApiResponse(responseCode = "200", description = "User created successfully",
             content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "{\n  \"name\": \"Eliana\",\n  \"password\": \"1496\",\n  \"cpf\": \"43945649803\"\n}")))
+                    examples = @ExampleObject(value = "{\n  \"name\": \"Eliana\",\n  \"password\": \"1496\",\n  \"cpf\": \"37995069006\"\n}")
+            ))
     public ResponseEntity<TokenResponse> create(@RequestBody @Valid CreateUserRequest request) {
         return ResponseEntity.ok(authManager.create(request));
     }
@@ -36,7 +38,7 @@ public class AuthResource {
     @PostMapping("/login")
     @ApiResponse(responseCode = "200", description = "User created successfully",
             content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "{\n  \"password\": \"1496\",\n  \"cpf\": \"43945649803\"\n}")))
+                    examples = @ExampleObject(value = "{\n  \"password\": \"1496\",\n  \"cpf\": \"37995069006\"\n}")))
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         return ResponseEntity.ok(authManager.login(loginRequest));
     }
