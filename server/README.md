@@ -26,11 +26,12 @@ Cada usuário (member) poderá votar uma única vez por sessão.
    ```bash
      git clone https://github.com/VitorManoelLP/desafio-votacao.git
    ```
-2. Na pasta server há um docker compose que sobe um container PostgreSQL e a própria aplicação, basta entrar na pasta e digitar:
+2. No arquivo server/.env tem uma variável POSTGRES_VOLUME, coloque nela uma pasta para ser usada como volume do container postgreSQL. **Crie um pasta somente para esse propósito**. 
+3. Na pasta server há um docker compose que sobe um container PostgreSQL e a própria aplicação, basta entrar na pasta e digitar:
    ```bash
      docker compose up
    ```
-3. Acesse a URL http://localhost:8080/swagger-ui/index.html para ver todos os endpoints disponíveis.
+4. Acesse a URL http://localhost:8080/swagger-ui/index.html para ver todos os endpoints disponíveis.
    Lembre-se de que apenas os endpoints de 'Auth' podem ser usados sem a necessidade de um token JWT.
    Para os demais, será necessário vincular o token no próprio Swagger.
    
