@@ -1,6 +1,7 @@
 package com.voting.challenge.infra.resource;
 
 import com.voting.challenge.app.interfaces.AuthManager;
+import com.voting.challenge.app.util.SecurityUtil;
 import com.voting.challenge.domain.payload.CreateUserRequest;
 import com.voting.challenge.domain.payload.LoginRequest;
 import com.voting.challenge.domain.payload.MemberInfo;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,11 +46,12 @@ public class AuthResource {
     }
 
     @GetMapping("/info")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<MemberInfo> info() {
         if (Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(authManager.info(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return ResponseEntity.ok(authManager.info(SecurityUtil.getCPF()));
     }
 
 }
