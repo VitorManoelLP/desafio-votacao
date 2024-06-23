@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - /vitor-manoel/postgres_pessoal:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - voting_custom_network
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    networks:
+      - voting_custom_network
+
+networks:
+  voting_custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
