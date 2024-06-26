@@ -33,7 +33,7 @@ jobs:
          node-version: ${{ matrix.node-version }}
       - name: Install modules
         working-directory: ./web
-        run: npm install
+        run: npm install --force
       - name: Run test
         working-directory: ./web
         run: npm run test

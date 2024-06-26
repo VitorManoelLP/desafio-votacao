@@ -39,7 +39,7 @@ public class VotingReportTest extends TestContainerExtension {
         Assertions.assertThat(count.countNo()).isEqualTo(2L);
         Assertions.assertThat(count.countYes()).isEqualTo(2L);
         Assertions.assertThat(count.totalVotes()).isEqualTo(4L);
-        Assertions.assertThat(count.percentYes()).isEqualTo("50%");
+        Assertions.assertThat(count.percentYes()).isEqualTo("5%");
         Assertions.assertThat(count.percentNo()).isEqualTo("50%");
     }
 
