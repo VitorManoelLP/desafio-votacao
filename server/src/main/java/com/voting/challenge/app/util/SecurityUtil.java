@@ -6,7 +6,7 @@ public final class SecurityUtil {
 
     private SecurityUtil() {}
 
-    public static String getCPF() {
+    public static String getEmail() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 

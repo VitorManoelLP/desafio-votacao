@@ -8,7 +8,6 @@ import com.voting.challenge.exception.PermissionDeniedVotingSessionView;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +24,7 @@ public class VotingReport implements ReportVote {
     }
 
     private void verifyPermissionToVoteBy(String sessionCode) {
-        if (votingSessionRepository.hasNotPermissionToCount(sessionCode, SecurityUtil.getCPF())) {
+        if (votingSessionRepository.hasNotPermissionToCount(sessionCode, SecurityUtil.getEmail())) {
             throw new PermissionDeniedVotingSessionView("You don't have permission to count votes if you didn't vote");
         }
     }

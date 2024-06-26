@@ -18,22 +18,22 @@ public interface VotingSessionRepository extends JpaRepository<VotingSession, UU
     @Query("SELECT session FROM VotingSession session " +
             " JOIN session.topic topic " +
             " WHERE session.code = :code AND topic.owner.id <> :member ")
-    Optional<VotingSession> findByCodeExceptOwnerBy(@Param("code") String code, @Param("member") UUID member);
+    Optional<VotingSession> findByCodeExceptOwnerBy(@Param("code") String code, @Param("member") String member);
 
     @Query("SELECT session FROM VotingSession session " +
             " JOIN session.topic topic " +
             " LEFT JOIN session.votes vote " +
             " LEFT JOIN vote.votedBy voted " +
             " JOIN topic.owner owner " +
-            "WHERE (owner.cpf = :cpf OR voted.cpf = :cpf)")
-    List<VotingSession> findAllSessionsByMember(@Param("cpf") String cpf);
+            "WHERE (owner.email = :email OR voted.email = :email)")
+    List<VotingSession> findAllSessionsByMember(@Param("email") String email);
 
     @Query("SELECT COUNT(session) = 0 FROM VotingSession session " +
             " JOIN session.topic topic " +
             " LEFT JOIN session.votes vote " +
             " LEFT JOIN vote.votedBy votedBy " +
             " JOIN topic.owner owner " +
-            " WHERE (owner.cpf = :member OR votedBy.cpf = :member) " +
+            " WHERE (owner.email = :member OR votedBy.email = :member) " +
             " AND session.code = :code ")
     boolean hasNotPermissionToCount(@Param("code") String code, @Param("member") String member);
 
@@ -64,6 +64,6 @@ public interface VotingSessionRepository extends JpaRepository<VotingSession, UU
             " JOIN session.topic topic " +
             " LEFT JOIN session.votes vote " +
             " LEFT JOIN vote.votedBy voted " +
-            " WHERE session.code = :code AND (voted.cpf = :member OR voted.cpf IS NULL)")
+            " WHERE session.code = :code AND (voted.email = :member OR voted.email IS NULL)")
     VotingSessionInfo view(@Param("code") String code, @Param("member") String member);
 }

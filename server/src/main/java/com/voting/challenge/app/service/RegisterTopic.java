@@ -27,10 +27,10 @@ public class RegisterTopic implements InitializeSession {
     private final VotingSessionRepository votingSessionRepository;
 
     public RegisterSessionResponse init(@NotNull final RegisterSessionDTO registerSession) {
-        final String cpf = SecurityUtil.getCPF();
-        final Member owner = memberRepository.findOneByCpf(cpf);
+        final String email = SecurityUtil.getEmail();
+        final Member owner = memberRepository.findOneByEmail(email);
         final Topic topic = new Topic(registerSession.description(), owner);
-        log.debug("Starting topic creating with topic {}. Created by {}", registerSession.description(),cpf);
+        log.debug("Starting topic creating with topic {}. Created by {}", registerSession.description(), email);
         final VotingSession votingSession = VotingSession.of(topic, registerSession.expiration()
                 .orElse(new Expiration(1L, ExpirationType.MINUTES)));
         votingSessionRepository.save(votingSession);

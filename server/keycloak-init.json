@@ -1,0 +1,25 @@
+{
+  "realm": "VOTING",
+  "enabled": true,
+  "displayName": "Voting",
+  "clients": [
+    {
+      "clientId": "VOTING_CLIENT",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "sP1u8IVqRttgTYFYiYqv6WphtgHAetTv",
+      "redirectUris": [
+        "/realms/VOTING/account/*"
+      ],
+      "baseUrl": "/realms/VOTING/account"
+    },
+    {
+      "clientId": "VOTING_FRONT_END",
+      "enabled": true,
+      "publicClient": true,
+      "baseUrl": "http://localhost:4200/",
+      "webOrigins": ["*"],
+      "redirectUris": ["*"]
+    }
+  ]
+}

@@ -17,9 +17,9 @@ import java.util.Comparator;
 import java.util.Optional;
 
 @Sql(statements = {
-        "INSERT INTO voting.member(id, name, cpf, password) VALUES('f3e15192-e428-4352-a240-bafa22eebd1e', 'foo', '32969615002', '123')"
+        "INSERT INTO keycloak.user_entity(id, username, email) VALUES('f3e15192-e428-4352-a240-bafa22eebd1e', 'foo', 'foo@gmail.com')"
 })
-@WithMockUser(username = "32969615002")
+@WithMockUser(username = "foo@gmail.com")
 public class RegisterTopicTest extends TestContainerExtension {
 
     @Autowired

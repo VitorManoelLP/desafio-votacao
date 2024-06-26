@@ -27,10 +27,10 @@ public class VoteAction implements VoteAct {
     private final VotingSessionRepository votingSessionRepository;
 
     public void vote(final VoteRequest voteRequest) {
-        final String username = SecurityUtil.getCPF();
+        final String username = SecurityUtil.getEmail();
         log.info("Vote request received from user: {}", username);
 
-        final Member loggedUser = memberRepository.findOneByCpf(username);
+        final Member loggedUser = memberRepository.findOneByEmail(username);
         log.debug("Logged user details: {}", loggedUser);
 
         final VotingSession session = getSession(voteRequest, loggedUser);
@@ -46,7 +46,7 @@ public class VoteAction implements VoteAct {
 
     private void verifyVotes(VotingSession session, Member loggedUser) {
         if (session.hasAnyVotesBy(loggedUser)) {
-            log.warn("User {} already voted in session {}", loggedUser.getCpf(), session.getCode());
+            log.warn("User {} already voted in session {}", loggedUser.getEmail(), session.getCode());
             throw new MemberAlreadyVotedException("You already voted in this topic.");
         }
         if (!session.isOpen()) {
@@ -54,7 +54,7 @@ public class VoteAction implements VoteAct {
             throw new SessionClosedException("Session of votes already closed");
         }
         if (session.getTopic().getOwner().equals(loggedUser)) {
-            log.warn("Owner {} attempted to vote in their own session {}", loggedUser.getCpf(), session.getCode());
+            log.warn("Owner {} attempted to vote in their own session {}", loggedUser.getEmail(), session.getCode());
             throw new PermissionDeniedVotingSessionView("The owner can't vote in your own voting");
         }
     }

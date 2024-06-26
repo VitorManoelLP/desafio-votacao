@@ -11,6 +11,26 @@ services:
       - 5432:5432
     networks:
       - voting_custom_network
+   keycloak: 
+    image: quay.io/keycloak/keycloak:20.0.0
+    command: ["-Dkeycloak.import=/config/realm-config.json", "start-dev"]
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: postgres
+      KC_DB_PASSWORD: postgres
+      KC_DB_USERNAME: postgres
+      KC_DB_SCHEMA: keycloak
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 8080:8080
+    volumes:
+      - ./keycloak-init.json:/config/realm-config.json
+    depends_on:
+      - postgres
+    networks:
+      - voting_custom_network
   spring-boot-app:
     build:
       context: .

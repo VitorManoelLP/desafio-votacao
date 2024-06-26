@@ -18,14 +18,4 @@ public enum VoteOption {
         return caption;
     }
 
-    @JsonCreator
-    public static VoteOption fromCaption(String caption) {
-        for (VoteOption option : VoteOption.values()) {
-            if (option.getCaption().equalsIgnoreCase(caption)) {
-                return option;
-            }
-        }
-        throw new IllegalArgumentException("Unknown caption: " + caption);
-    }
-
 }

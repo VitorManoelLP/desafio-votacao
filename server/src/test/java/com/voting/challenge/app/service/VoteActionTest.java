@@ -16,8 +16,8 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.UUID;
 
 @Sql(statements = {
-        "INSERT INTO voting.member(id, name, cpf, password) VALUES('f3e15192-e428-4352-a240-bafa22eebd1e', 'foo', '32969615002', '123')",
-        "INSERT INTO voting.member(id, name, cpf, password) VALUES('cc4e1acc-830d-439d-9075-3323fa667cec', 'foo citizen', '42587851050', '123')",
+        "INSERT INTO keycloak.user_entity(id, username, email) VALUES('f3e15192-e428-4352-a240-bafa22eebd1e', 'foo', 'foo@gmail.com')",
+        "INSERT INTO keycloak.user_entity(id, username, email) VALUES('cc4e1acc-830d-439d-9075-3323fa667cec', 'foo citizen', 'foocitizen@gmail.com')",
         "INSERT INTO voting.topic(id, description, id_owner) VALUES('338b005a-18bc-40b0-9fb5-7cf00edf4d3a', 'Yes or No?', 'f3e15192-e428-4352-a240-bafa22eebd1e')",
         """
         INSERT INTO voting.voting_session(id, id_topic, start_time, end_time, code)
@@ -28,7 +28,7 @@ import java.util.UUID;
         VALUES('45bedd4a-3c04-48e4-bc8b-bbdd779c03bd', '338b005a-18bc-40b0-9fb5-7cf00edf4d3a', '2024-06-19 14:30:00', '2024-06-19 14:30:00', '1111-2222-5555');
         """
 })
-@WithMockUser(username = "42587851050")
+@WithMockUser(username = "foocitizen@gmail.com")
 public class VoteActionTest extends TestContainerExtension {
 
     @Autowired
@@ -38,10 +38,10 @@ public class VoteActionTest extends TestContainerExtension {
     public void simpleVote() {
         voteAction.vote(new VoteRequest("1111-2222-3333", VoteOption.NAO));
         final Vote vote = getEm().createQuery("SELECT vote FROM Vote vote WHERE vote.votedBy.id = :id", Vote.class)
-                .setParameter("id", UUID.fromString("cc4e1acc-830d-439d-9075-3323fa667cec"))
+                .setParameter("id", "cc4e1acc-830d-439d-9075-3323fa667cec")
                 .getSingleResult();
 
-        Assertions.assertThat(vote.getVotedBy().getId()).isEqualTo(UUID.fromString("cc4e1acc-830d-439d-9075-3323fa667cec"));
+        Assertions.assertThat(vote.getVotedBy().getId()).isEqualTo("cc4e1acc-830d-439d-9075-3323fa667cec");
         Assertions.assertThat(vote.getVote()).isEqualTo(VoteOption.NAO);
         Assertions.assertThat(vote.getSession().getCode()).isEqualTo("1111-2222-3333");
     }
