@@ -24,14 +24,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Profile("!test")
 public class WebSecurityConfig {
 
-    private static final String[] WHITE_LIST = {
-            "/api/auth/**",
-            "/api-docs/**",
-            "/swagger-ui/**"
-    };
-
-    @Value("${keycloak-address:''}")
+    @Value("${KEYCLOAK_AUTH_SERVER_URL:''}")
     private String keycloakAddress;
+
+    @Value("${KEYCLOAK_REALM:''}")
+    private String realm;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -47,7 +44,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri(keycloakAddress + "/realms/SOCIAL_MEDIA/protocol/openid-connect/certs").build();
+        return NimbusJwtDecoder.withJwkSetUri(keycloakAddress + "/realms/" + realm + "/protocol/openid-connect/certs").build();
     }
 
     @Bean

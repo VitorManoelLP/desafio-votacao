@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres
@@ -7,11 +9,13 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - ${POSTGRES_VOLUME}:/var/lib/postgresql/data
+      - ./init-schema-keycloak.sql:/docker-entrypoint-initdb.d/init-schema.sql
     ports:
       - 5432:5432
     networks:
       - voting_custom_network
-   keycloak: 
+
+  keycloak: 
     image: quay.io/keycloak/keycloak:20.0.0
     command: ["-Dkeycloak.import=/config/realm-config.json", "start-dev"]
     environment:
@@ -31,6 +35,7 @@ services:
       - postgres
     networks:
       - voting_custom_network
+
   spring-boot-app:
     build:
       context: .
@@ -40,10 +45,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      KEYCLOAK_AUTH_SERVER_URL: http://keycloak:8080
+      KEYCLOAK_REALM: VOTING
     ports:
-      - 8080:8080
+      - 8081:8080
     depends_on:
       - postgres
+      - keycloak
     networks:
       - voting_custom_network
 
