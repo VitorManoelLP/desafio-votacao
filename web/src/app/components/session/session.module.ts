@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { CreateComponent } from './create/create.component';
 import { EnterComponent } from './enter/enter.component';
 import { RouterModule, Routes } from '@angular/router';
+import { FormValidateModule } from '../../shared/directive/form-validate.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -26,6 +28,8 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
+    FormValidateModule,
+    ReactiveFormsModule,
     RouterModule.forChild(routes)
   ]
 })

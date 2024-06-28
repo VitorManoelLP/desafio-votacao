@@ -1,0 +1,12 @@
+.card {
+  margin-top: 50px;
+}
+
+.form-floating {
+  max-width: 300px;
+  margin: auto;
+}
+
+.btn-primary {
+  width: 100%;
+}
