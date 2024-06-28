@@ -6,6 +6,10 @@ export const routes: Routes = [
     loadChildren: () => import('./components/home/home.module').then(m => m.HomeModule)
   },
   {
+    path: 'session',
+    loadChildren: () => import('./components/session/session.module').then(m => m.SessionModule)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'

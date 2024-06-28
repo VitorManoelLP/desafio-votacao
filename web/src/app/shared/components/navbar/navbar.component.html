@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">Voting</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link"
+          [ngClass]="{ 'active': routes['HOME'].active }"
+          [routerLink]="[routes['HOME'].route]"
+          (click)="toggleRoute('HOME')">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+          [ngClass]="{ 'active': routes['CREATE_SESSION'].active }"
+          [routerLink]="[routes['CREATE_SESSION'].route]"
+          (click)="toggleRoute('CREATE_SESSION')">Iniciar sessão de votação</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+          [ngClass]="{ 'active': routes['ENTER_SESSION'].active }"
+          [routerLink]="[routes['ENTER_SESSION'].route]"
+          (click)="toggleRoute('ENTER_SESSION')">Entrar em uma sessão de votação</a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center">
+        <span class="navbar-text me-3">
+          Usuário: {{ profile.user.username }}
+        </span>
+        <button class="btn btn-outline-primary" (click)="logout()">Sair</button>
+      </div>
+    </div>
+  </div>
+</nav>

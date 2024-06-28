@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { KeycloakAngularModule } from 'keycloak-angular';
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routes';
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { routes } from './app.routes';
   imports: [
     RouterModule.forRoot(routes),
     BrowserModule,
+    NavbarComponent,
     AppRoutingModule,
     KeycloakAngularModule
   ],
