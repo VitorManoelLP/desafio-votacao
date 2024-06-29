@@ -1,6 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Expiration } from '../../../shared/utils/expiration-utils';
+import { VotingSessionService } from '../../../shared/services/voting-session.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-enter',
@@ -10,19 +12,14 @@ import { Expiration } from '../../../shared/utils/expiration-utils';
 export class EnterComponent implements OnDestroy {
 
   threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
-
   formGroup: FormGroup;
+  voteScreenActived?: { expired: boolean, opened: boolean, description: string, code: string, expiration: Expiration | undefined, alreadyVoted: boolean };
 
-  voteScreenActived = {
-    opened: false,
-    description: 'yes or no?',
-    code: '1111-2222-3333',
-    startedAt: Date.now(),
-    endDate: Date.now() + this.threeDaysInMilliseconds,
-    expiration: Expiration.create(Date.now() + this.threeDaysInMilliseconds)
-  };
+  get code() {
+    return `${this.formGroup.get('part1')?.value}-${this.formGroup.get('part2')?.value}-${this.formGroup.get('part3')?.value}`
+  }
 
-  constructor() {
+  constructor(private sessionService: VotingSessionService, private toastrService: ToastrService) {
     this.formGroup = new FormBuilder().group({
       'part1': [''],
       'part2': [''],
@@ -31,20 +28,42 @@ export class EnterComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.voteScreenActived.expiration.done();
+    if (this.voteScreenActived) {
+      this.voteScreenActived.expiration?.done();
+    }
   }
 
   public enterSession() {
-    this.voteScreenActived.opened = true;
-    this.voteScreenActived.expiration.init();
+    this.sessionService.view(this.code).subscribe(session => {
+      this.voteScreenActived = {
+        code: this.code,
+        description: session.topic,
+        opened: true,
+        expiration: session.alreadyVote ? undefined : Expiration.create(Date.parse(session.closeAt)),
+        alreadyVoted: session.alreadyVote,
+        expired: !session.isOpen
+      };
+      this.voteScreenActived.expiration?.init();
+    });
   }
 
   public vote(option: 'Sim' | 'Não') {
-
+    this.sessionService.vote({ session: this.code, voteOption: option }).subscribe({
+      next: () => {
+        if (this.voteScreenActived) {
+          this.voteScreenActived.alreadyVoted = true;
+        }
+      },
+      error: (err) => this.toastrService.error(err['message'], 'Ocorreu um erro ao votar')
+    });
   }
 
   public leaveSession() {
-    this.voteScreenActived.opened = false;
+    if (this.voteScreenActived) {
+      this.voteScreenActived.expiration?.done();
+      this.voteScreenActived.opened = false;
+      this.formGroup.reset();
+    }
   }
 
   public onPaste(event: ClipboardEvent) {

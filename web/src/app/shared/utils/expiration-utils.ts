@@ -2,7 +2,7 @@ export class Expiration {
 
   private oneSecond: number = 1000;
   private intervalReference?: any;
-  private _value = '00:00:00';
+  private _value = '00:00:00:00';
 
   get value() {
     return this._value;
@@ -27,11 +27,12 @@ export class Expiration {
         return;
       }
 
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      this._value = `${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)}`;
+      this._value = `${this.pad(days)}:${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)}`;
 
       console.log(this._value);
 

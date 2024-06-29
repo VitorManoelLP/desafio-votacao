@@ -27,8 +27,8 @@ public class RegisterTopic implements InitializeSession {
     private final VotingSessionRepository votingSessionRepository;
 
     public RegisterSessionResponse init(@NotNull final RegisterSessionDTO registerSession) {
-        final String email = SecurityUtil.getEmail();
-        final Member owner = memberRepository.findOneByEmail(email);
+        final String email = SecurityUtil.getIdUser();
+        final Member owner = memberRepository.findOneById(email);
         final Topic topic = new Topic(registerSession.description(), owner);
         log.debug("Starting topic creating with topic {}. Created by {}", registerSession.description(), email);
         final VotingSession votingSession = VotingSession.of(topic, registerSession.expiration()

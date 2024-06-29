@@ -24,7 +24,7 @@ public class VotingReport implements ReportVote {
     }
 
     private void verifyPermissionToVoteBy(String sessionCode) {
-        if (votingSessionRepository.hasNotPermissionToCount(sessionCode, SecurityUtil.getEmail())) {
+        if (votingSessionRepository.hasNotPermissionToCount(sessionCode, SecurityUtil.getIdUser())) {
             throw new PermissionDeniedVotingSessionView("You don't have permission to count votes if you didn't vote");
         }
     }

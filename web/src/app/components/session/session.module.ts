@@ -5,6 +5,8 @@ import { EnterComponent } from './enter/enter.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormValidateModule } from '../../shared/directive/form-validate.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { VotingSessionService } from '../../shared/services/voting-session.service';
+import { HttpClientHelper } from '../../shared/client/http-client';
 
 const routes: Routes = [
   {
@@ -31,6 +33,10 @@ const routes: Routes = [
     FormValidateModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes)
+  ],
+  providers: [
+    VotingSessionService,
+    HttpClientHelper
   ]
 })
 export class SessionModule { }

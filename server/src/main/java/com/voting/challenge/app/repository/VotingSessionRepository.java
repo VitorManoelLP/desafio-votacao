@@ -25,15 +25,15 @@ public interface VotingSessionRepository extends JpaRepository<VotingSession, UU
             " LEFT JOIN session.votes vote " +
             " LEFT JOIN vote.votedBy voted " +
             " JOIN topic.owner owner " +
-            "WHERE (owner.email = :email OR voted.email = :email)")
-    List<VotingSession> findAllSessionsByMember(@Param("email") String email);
+            "WHERE (owner.id = :idUser OR voted.id = :idUser)")
+    List<VotingSession> findAllSessionsByMember(@Param("idUser") String idUser);
 
     @Query("SELECT COUNT(session) = 0 FROM VotingSession session " +
             " JOIN session.topic topic " +
             " LEFT JOIN session.votes vote " +
             " LEFT JOIN vote.votedBy votedBy " +
             " JOIN topic.owner owner " +
-            " WHERE (owner.email = :member OR votedBy.email = :member) " +
+            " WHERE (owner.id = :member OR votedBy.id = :member) " +
             " AND session.code = :code ")
     boolean hasNotPermissionToCount(@Param("code") String code, @Param("member") String member);
 
@@ -64,6 +64,6 @@ public interface VotingSessionRepository extends JpaRepository<VotingSession, UU
             " JOIN session.topic topic " +
             " LEFT JOIN session.votes vote " +
             " LEFT JOIN vote.votedBy voted " +
-            " WHERE session.code = :code AND (voted.email = :member OR voted.email IS NULL)")
+            " WHERE session.code = :code AND (voted.id = :member OR voted.id IS NULL)")
     VotingSessionInfo view(@Param("code") String code, @Param("member") String member);
 }

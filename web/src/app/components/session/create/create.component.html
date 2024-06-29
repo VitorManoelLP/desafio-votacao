@@ -25,6 +25,7 @@
           class="form-control"
           id="duration"
           placeholder="Duração"
+          formControlName="expirationValue"
         />
         <label for="duration">Duração</label>
       </div>
@@ -33,6 +34,7 @@
           class="form-select"
           id="durationType"
           aria-label="Tipo de Duração"
+          formControlName="expirationType"
         >
           <option value="null" disabled [defaultSelected]="true">
             Selecione um tempo de expiração

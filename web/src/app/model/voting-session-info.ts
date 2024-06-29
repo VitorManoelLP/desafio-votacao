@@ -4,6 +4,6 @@ export interface VotingSessionInfo {
   isOpen: boolean;
   alreadyVote: boolean;
   yourVote: string;
-  openedAt: Date;
-  closeAt: Date;
+  openedAt: string;
+  closeAt: string;
 }

@@ -31,35 +31,35 @@ public class SessionInfo implements SessionView {
 
     @Override
     public VotingSessionInfo view(String code) {
-        String username = SecurityUtil.getEmail();
-        log.info("Viewing session with code: {} for user: {}", code, username);
-        VotingSessionInfo sessionInfo = votingSessionRepository.view(code, username);
+        final String idUser = SecurityUtil.getIdUser();
+        log.info("Viewing session with code: {} for user: {}", code, idUser);
+        VotingSessionInfo sessionInfo = votingSessionRepository.view(code, idUser);
         log.info("Session info retrieved: {}", sessionInfo);
         return sessionInfo;
     }
 
     @Override
     public SessionsByMember byMember() {
-        final String cpf = SecurityUtil.getEmail();
-        log.info("Retrieving sessions for member with CPF: {}", cpf);
-        final List<VotingSession> sessions = votingSessionRepository.findAllSessionsByMember(cpf);
+        final String idUser = SecurityUtil.getIdUser();
+        log.info("Retrieving sessions for member with CPF: {}", idUser);
+        final List<VotingSession> sessions = votingSessionRepository.findAllSessionsByMember(idUser);
         log.debug("Found sessions: {}", sessions);
         final Map<String, List<VotingSession>> sessionsByOwner = sessions.stream()
-                .collect(Collectors.groupingBy(session -> session.getTopic().getOwner().getEmail()));
+                .collect(Collectors.groupingBy(session -> session.getTopic().getOwner().getId()));
         log.debug("Grouped sessions by owner: {}", sessionsByOwner);
         final Map<String, List<VotingSession>> sessionsByVoted = getSessionsGroupedByVoted(sessions);
         log.debug("Grouped sessions by voted: {}", sessionsByVoted);
-        final Map<VotingSession, String> voteBySession = getCPFGroupedBySessions(sessions, cpf);
+        final Map<VotingSession, String> voteBySession = getCPFGroupedBySessions(sessions, idUser);
         log.debug("Mapped votes by session: {}", voteBySession);
-        SessionsByMember sessionsByMember = buildSessionMember(sessionsByOwner, cpf, sessionsByVoted, voteBySession);
+        SessionsByMember sessionsByMember = buildSessionMember(sessionsByOwner, idUser, sessionsByVoted, voteBySession);
         log.info("Sessions by member built: {}", sessionsByMember);
         return sessionsByMember;
     }
 
-    private Map<VotingSession, String> getCPFGroupedBySessions(List<VotingSession> sessions, String cpf) {
+    private Map<VotingSession, String> getCPFGroupedBySessions(List<VotingSession> sessions, String idUser) {
         return sessions.stream()
                 .collect(Collectors.toMap(Function.identity(), session -> session.getVotes().stream()
-                        .filter(vote -> vote.getVotedBy().getEmail().equals(cpf))
+                        .filter(vote -> vote.getVotedBy().getId().equals(idUser))
                         .map(vote -> vote.getVote().getCaption())
                         .findFirst()
                         .orElse("")));
@@ -69,24 +69,24 @@ public class SessionInfo implements SessionView {
         return sessions.stream()
                 .collect(Collectors.groupingBy(session -> session.getVotes().stream()
                         .map(Vote::getVotedBy)
-                        .map(Member::getEmail)
+                        .map(Member::getId)
                         .findFirst()
                         .orElse("")));
     }
 
     private SessionsByMember buildSessionMember(final Map<String, List<VotingSession>> sessionsByOwner,
-            final String cpf,
+            final String idUser,
             final Map<String, List<VotingSession>> sessionsByVoted,
             final Map<VotingSession, String> voteBySession) {
         log.debug("Building session member data");
         return new SessionsByMember(
-                (long) sessionsByOwner.getOrDefault(cpf, new ArrayList<>()).size(),
-                (long) sessionsByVoted.getOrDefault(cpf, new ArrayList<>()).size(),
-                sessionsByOwner.getOrDefault(cpf, new ArrayList<>())
+                (long) sessionsByOwner.getOrDefault(idUser, new ArrayList<>()).size(),
+                (long) sessionsByVoted.getOrDefault(idUser, new ArrayList<>()).size(),
+                sessionsByOwner.getOrDefault(idUser, new ArrayList<>())
                         .stream()
                         .map(c -> createInfo(c, false, ""))
                         .toList(),
-                sessionsByVoted.getOrDefault(cpf, new ArrayList<>())
+                sessionsByVoted.getOrDefault(idUser, new ArrayList<>())
                         .stream()
                         .map(c -> createInfo(c, true, voteBySession.getOrDefault(c, "")))
                         .toList()

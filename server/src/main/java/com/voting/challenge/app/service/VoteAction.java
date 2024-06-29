@@ -27,10 +27,10 @@ public class VoteAction implements VoteAct {
     private final VotingSessionRepository votingSessionRepository;
 
     public void vote(final VoteRequest voteRequest) {
-        final String username = SecurityUtil.getEmail();
+        final String username = SecurityUtil.getIdUser();
         log.info("Vote request received from user: {}", username);
 
-        final Member loggedUser = memberRepository.findOneByEmail(username);
+        final Member loggedUser = memberRepository.findOneById(username);
         log.debug("Logged user details: {}", loggedUser);
 
         final VotingSession session = getSession(voteRequest, loggedUser);

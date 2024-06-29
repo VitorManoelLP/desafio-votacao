@@ -7,6 +7,11 @@ import { KeycloakAngularModule } from 'keycloak-angular';
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routes';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { KeycloakInterceptor } from './shared/security/keycloak.interceptor';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -14,12 +19,20 @@ import { NavbarComponent } from './shared/components/navbar/navbar.component';
   ],
   imports: [
     RouterModule.forRoot(routes),
-    BrowserModule,
+    BrowserAnimationsModule,
     NavbarComponent,
     AppRoutingModule,
-    KeycloakAngularModule
+    KeycloakAngularModule,
+    HttpClientModule,
+    ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: KeycloakInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
