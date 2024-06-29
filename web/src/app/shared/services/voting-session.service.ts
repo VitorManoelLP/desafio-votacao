@@ -7,6 +7,7 @@ import { RegisterSessionResponse } from "../../model/register-session.response";
 import { CountReport } from "../../model/count-report";
 import { VoteRequest } from "../../model/vote-request";
 import { VotingSessionInfo } from "../../model/voting-session-info";
+import { SessionsByMember } from "../../model/sessions-by.member";
 
 @Injectable()
 export class VotingSessionService {
@@ -31,7 +32,7 @@ export class VotingSessionService {
     return this.httpClient.get(Request.of({ endpoint: `view/v1/${sessionCode}` }));
   }
 
-  public getSessions() {
+  public getSessions(): Observable<SessionsByMember> {
     return this.httpClient.get(Request.of({}))
   }
 
