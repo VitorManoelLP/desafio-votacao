@@ -1,57 +1,100 @@
 @if (!generateCode.has) {
-  <div class="card text-center" style="max-width: 400px; margin: auto; margin-top: 50px;">
-    <div class="card-header">
-      Cadastre sua sessão de votação.
-    </div>
-    <div class="card-body">
-      <form [formGroup]="formGroup">
-        <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="description" placeholder="Descrição" formControlName="description" form-validate>
-          <label for="description">Descrição<span class="ms-1 text-danger">*</span></label>
-        </div>
-        <div class="form-floating mb-3">
-          <input type="number" class="form-control" id="duration" placeholder="Duração">
-          <label for="duration">Duração</label>
-        </div>
-        <div class="form-floating mb-3">
-          <select class="form-select" id="durationType" aria-label="Tipo de Duração">
-            <option value="null" disabled [defaultSelected]="true">Selecione um tempo de expiração</option>
-            <option value="MINUTES">MINUTOS</option>
-            <option value="HOURS">HORAS</option>
-            <option value="DAYS">DIAS</option>
-          </select>
-          <label for="durationType">Tipo de Duração</label>
-        </div>
-        <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid" (click)="createSession()">Iniciar sessão</button>
-      </form>
-    </div>
-    <div class="card-footer">
-      <i class="fa fa-question-circle"></i>
-      Caso nenhum tempo de expiração seja selecionado sua sessão terá um minuto como padrão
-    </div>
-  </div>
-} @else {
-  <div class="card text-center" style="max-width: 400px; margin: auto; margin-top: 50px;">
-    <div class="card-header">
-      <div class="row">
-        <div class="col-md-10 mt-2">
-          Código de acesso
-        </div>
-        <div class="col-md-2">
-          <button class="btn btn-link" title="Criar outra sessão" (click)="createNew()"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-        </div>
+<div
+  class="card text-center"
+  style="max-width: 400px; margin: auto; margin-top: 50px"
+>
+  <div class="card-header">Cadastre sua sessão de votação.</div>
+  <div class="card-body">
+    <form [formGroup]="formGroup">
+      <div class="form-floating mb-3">
+        <input
+          type="text"
+          class="form-control"
+          id="description"
+          placeholder="Descrição"
+          formControlName="description"
+          form-validate
+        />
+        <label for="description"
+          >Descrição<span class="ms-1 text-danger">*</span></label
+        >
       </div>
-    </div>
-    <div class="card-body">
-      <div class="d-flex justify-content-center align-items-center">
-        <p class="fs-3 mb-0">{{ generateCode.code }}</p>
-        <button class="btn btn-link" (click)="copyCode()" title="Copiar código">
-          <i class="fa" [ngClass]="{ 'fa-clipboard': !generateCode.copied, 'fa-check': generateCode.copied }" aria-hidden="true"></i>
+      <div class="form-floating mb-3">
+        <input
+          type="number"
+          class="form-control"
+          id="duration"
+          placeholder="Duração"
+        />
+        <label for="duration">Duração</label>
+      </div>
+      <div class="form-floating mb-3">
+        <select
+          class="form-select"
+          id="durationType"
+          aria-label="Tipo de Duração"
+        >
+          <option value="null" disabled [defaultSelected]="true">
+            Selecione um tempo de expiração
+          </option>
+          <option value="MINUTES">MINUTOS</option>
+          <option value="HOURS">HORAS</option>
+          <option value="DAYS">DIAS</option>
+        </select>
+        <label for="durationType">Tipo de Duração</label>
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="formGroup.invalid"
+        (click)="createSession()"
+      >
+        Iniciar sessão
+      </button>
+    </form>
+  </div>
+  <div class="card-footer">
+    <i class="fa fa-question-circle"></i>
+    Caso nenhum tempo de expiração seja selecionado sua sessão terá um minuto
+    como padrão
+  </div>
+</div>
+} @else {
+<div
+  class="card text-center"
+  style="max-width: 400px; margin: auto; margin-top: 50px"
+>
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-10 mt-2">Código de acesso</div>
+      <div class="col-md-2">
+        <button
+          class="btn btn-link"
+          title="Criar outra sessão"
+          (click)="createNew()"
+        >
+          <i class="fa fa-refresh" aria-hidden="true"></i>
         </button>
       </div>
     </div>
-    <div class="card-footer text-body-secondary">
-      Guarde este código e envie para quem for votar na sua sessão
+  </div>
+  <div class="card-body">
+    <div class="d-flex justify-content-center align-items-center">
+      <p class="fs-3 mb-0">{{ generateCode.code }}</p>
+      <button class="btn btn-link" (click)="copyCode()" title="Copiar código">
+        <i
+          class="fa"
+          [ngClass]="{
+            'fa-clipboard': !generateCode.copied,
+            'fa-check': generateCode.copied
+          }"
+          aria-hidden="true"
+        ></i>
+      </button>
     </div>
   </div>
+  <div class="card-footer text-body-secondary">
+    Guarde este código e envie para quem for votar na sua sessão
+  </div>
+</div>
 }

@@ -7,10 +7,15 @@
       <div class="card-body">
         <h5 class="card-title display-4">1</h5>
         <button class="btn btn-link" (click)="togglePanel('CREATED_SESSION')">
-          <i class="fa-2x fa" [ngClass]="{
-            'fa-angle-double-up': !expansivePanel['CREATED_SESSION'].opened,
-            'fa-angle-double-down': expansivePanel['CREATED_SESSION'].opened
-          }" aria-hidden="true" style="color: black;"></i>
+          <i
+            class="fa-2x fa"
+            [ngClass]="{
+              'fa-angle-double-up': !expansivePanel['CREATED_SESSION'].opened,
+              'fa-angle-double-down': expansivePanel['CREATED_SESSION'].opened
+            }"
+            aria-hidden="true"
+            style="color: black"
+          ></i>
         </button>
       </div>
     </div>
@@ -24,14 +29,17 @@
       <div class="card-body">
         <h5 class="card-title display-4">2</h5>
         <button class="btn btn-link" (click)="togglePanel('VOTED_SESSION')">
-          <i class="fa-2x fa" [ngClass]="{
-            'fa-angle-double-up': !expansivePanel['VOTED_SESSION'].opened,
-            'fa-angle-double-down': expansivePanel['VOTED_SESSION'].opened
-          }" aria-hidden="true" style="color: black;"></i>
+          <i
+            class="fa-2x fa"
+            [ngClass]="{
+              'fa-angle-double-up': !expansivePanel['VOTED_SESSION'].opened,
+              'fa-angle-double-down': expansivePanel['VOTED_SESSION'].opened
+            }"
+            aria-hidden="true"
+            style="color: black"
+          ></i>
         </button>
       </div>
     </div>
   </div>
-
-
 </div>
