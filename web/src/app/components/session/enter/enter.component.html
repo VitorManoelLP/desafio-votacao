@@ -1,4 +1,19 @@
 @if (!voteScreenActived?.opened) {
+
+  <div
+  *ngIf="lastConsultedSession"
+  class="card last-session-card"
+>
+  <div class="card-body p-2">
+    <h6 class="card-title mb-1">Última sessão consultada por você:</h6>
+    <p class="card-text">{{ lastConsultedSession.sessionInfo.code }}</p>
+    <p class="card-text"><small class="text-muted">{{ getTimeSinceLastSession() }}</small></p>
+    <button class="btn btn-primary btn-sm" (click)="enterLastSession()">
+      Entrar <i class="fa fa-arrow-right" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>
+
 <div
   class="card text-center"
   style="max-width: 500px; margin: auto; margin-top: 50px"
@@ -45,21 +60,46 @@
           (paste)="onPaste($event)"
         />
       </div>
-      <button type="submit" class="btn btn-primary" style="width: 100%" (click)="enterSession()">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        style="width: 100%"
+        (click)="enterSession()"
+      >
         Entrar <i class="fa fa-arrow-right" aria-hidden="true"></i>
       </button>
     </form>
   </div>
 </div>
 } @else {
-  <div class="container text-center mt-5">
-    <h1 class="mb-4">yes or no?</h1>
-    <h2 class="mb-4">Tempo para expirar sessão</h2>
-    <div id="timer" class="timer mb-4">{{ voteScreenActived?.expiration ? voteScreenActived?.expiration?.value : 'Expirado' }}</div>
-    <div class="button-panel d-flex justify-content-center">
-      <button class="btn btn-success me-2" (click)="vote('Sim')" [disabled]="voteScreenActived?.expired">Sim</button>
-      <button class="btn btn-danger me-2" (click)="vote('Não')" [disabled]="voteScreenActived?.expired">Não</button>
-      <button class="btn btn-secondary" (click)="leaveSession()">Sair da sessão</button>
-    </div>
+<div class="container text-center mt-5">
+  <h1 class="mb-4">{{ voteScreenActived?.session?.topic }}</h1>
+  <h2 class="mb-4">Tempo para expirar sessão</h2>
+  <div id="timer" class="timer mb-4">
+    {{
+      voteScreenActived?.expiration
+        ? voteScreenActived?.expiration?.value
+        : "Expirado"
+    }}
   </div>
+  <div class="button-panel d-flex justify-content-center">
+    <button
+      class="btn btn-success me-2"
+      (click)="vote('Sim')"
+      [disabled]="!voteScreenActived?.session?.isOpen"
+    >
+      Sim
+    </button>
+    <button
+      class="btn btn-danger me-2"
+      (click)="vote('Não')"
+      [disabled]="!voteScreenActived?.session?.isOpen"
+    >
+      Não
+    </button>
+    <button class="btn btn-secondary" (click)="leaveSession()">
+      Sair da sessão
+    </button>
+  </div>
+</div>
 }

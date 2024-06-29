@@ -3,18 +3,24 @@ package com.voting.challenge.app.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.voting.challenge.app.interfaces.MarkConsultedSession;
 import com.voting.challenge.app.interfaces.SessionView;
+import com.voting.challenge.app.repository.LastConsultedSessionRepository;
+import com.voting.challenge.app.repository.MemberRepository;
 import com.voting.challenge.app.repository.VotingSessionRepository;
 import com.voting.challenge.app.util.SecurityUtil;
+import com.voting.challenge.domain.LastConsultedSessions;
 import com.voting.challenge.domain.Member;
 import com.voting.challenge.domain.Vote;
 import com.voting.challenge.domain.VotingSession;
+import com.voting.challenge.domain.payload.LastConsult;
 import com.voting.challenge.domain.payload.SessionsByMember;
 import com.voting.challenge.domain.payload.VotingSessionInfo;
 
@@ -22,12 +28,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class SessionInfo implements SessionView {
 
     private final VotingSessionRepository votingSessionRepository;
+    private final MarkConsultedSession markConsultedSession;
 
     @Override
     public VotingSessionInfo view(String code) {
@@ -35,6 +42,7 @@ public class SessionInfo implements SessionView {
         log.info("Viewing session with code: {} for user: {}", code, idUser);
         VotingSessionInfo sessionInfo = votingSessionRepository.view(code, idUser);
         log.info("Session info retrieved: {}", sessionInfo);
+        markConsultedSession.mark(votingSessionRepository.getIdByCode(code));
         return sessionInfo;
     }
 
@@ -54,6 +62,15 @@ public class SessionInfo implements SessionView {
         SessionsByMember sessionsByMember = buildSessionMember(sessionsByOwner, idUser, sessionsByVoted, voteBySession);
         log.info("Sessions by member built: {}", sessionsByMember);
         return sessionsByMember;
+    }
+
+    @Override
+    public Optional<LastConsult> getLastConsult() {
+        final Optional<LastConsultedSessions> lastConsult = markConsultedSession.get();
+        return lastConsult.map(consult -> {
+            final VotingSessionInfo view = votingSessionRepository.view(consult.getVotingSession().getCode(), consult.getViewer().getId());
+            return new LastConsult(view, consult.getConsultHour());
+        });
     }
 
     private Map<VotingSession, String> getCPFGroupedBySessions(List<VotingSession> sessions, String idUser) {

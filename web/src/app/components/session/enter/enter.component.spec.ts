@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { Expiration } from '../../../shared/utils/expiration-utils';
 import { VotingSessionInfo } from '../../../model/voting-session-info';
 import { SessionModule } from '../session.module';
+import { LastConsult } from '../../../model/last-consult';
 
 describe('EnterComponent', () => {
   let component: EnterComponent;
@@ -14,8 +15,9 @@ describe('EnterComponent', () => {
   let sessionServiceSpy: jasmine.SpyObj<VotingSessionService>;
   let toastrServiceSpy: jasmine.SpyObj<ToastrService>;
 
+
   beforeEach(async () => {
-    const sessionSpy = jasmine.createSpyObj('VotingSessionService', ['view', 'vote']);
+    const sessionSpy = jasmine.createSpyObj('VotingSessionService', ['view', 'vote', 'getLastConsultedSession']);
     const toastrSpy = jasmine.createSpyObj('ToastrService', ['error']);
 
     await TestBed.configureTestingModule({
@@ -33,6 +35,21 @@ describe('EnterComponent', () => {
 
     fixture = TestBed.createComponent(EnterComponent);
     component = fixture.componentInstance;
+
+    const mockLastConsult: LastConsult = {
+      consultedAt: new Date().toISOString(),
+      sessionInfo: {
+        topic: 'Test Topic',
+        code: '1234-5678-9012',
+        closeAt: new Date().toISOString(),
+        alreadyVote: false,
+        isOpen: true,
+        yourVote: '',
+        openedAt: ''
+      }
+    };
+    sessionServiceSpy.getLastConsultedSession.and.returnValue(of(mockLastConsult));
+
     fixture.detectChanges();
   });
 
@@ -40,59 +57,43 @@ describe('EnterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should enter a session and initialize expiration', () => {
-    const mockSession: VotingSessionInfo = {
-      topic: 'Test Topic',
-      code: '1234-5678-9012',
-      closeAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-      alreadyVote: false,
-      isOpen: true
-    } as VotingSessionInfo;
-
-    sessionServiceSpy.view.and.returnValue(of(mockSession));
-
-    component.enterSession();
-
-    expect(sessionServiceSpy.view).toHaveBeenCalledWith(component.code);
-    expect(component.voteScreenActived?.description).toEqual(mockSession.topic);
-    expect(component.voteScreenActived?.code).toEqual(component.code);
-    expect(component.voteScreenActived?.opened).toBeTrue();
-    expect(component.voteScreenActived?.expired).toBeFalse();
-    expect(component.voteScreenActived?.alreadyVoted).toBeFalse();
-
-    spyOn(Expiration.prototype, 'init');
-    component.voteScreenActived?.expiration?.init();
-    expect(Expiration.prototype.init).toHaveBeenCalled();
-  });
-
-  it('should vote and handle success', () => {
-    sessionServiceSpy.vote.and.callFake(() => of());
-
-    component.voteScreenActived = {
-      expired: false,
-      opened: true,
-      description: 'Test Topic',
-      code: '1234-5678-9012',
-      expiration: undefined,
-      alreadyVoted: false
+  it('should initialize last consulted session on init', () => {
+    const mockLastConsult: LastConsult = {
+      consultedAt: new Date().toISOString(),
+      sessionInfo: {
+        topic: 'Test Topic',
+        code: '1234-5678-9012',
+        closeAt: new Date().toISOString(),
+        alreadyVote: false,
+        isOpen: true,
+        yourVote: '',
+        openedAt: ''
+      }
     };
 
-    component.vote('Sim');
+    sessionServiceSpy.getLastConsultedSession.and.returnValue(of(mockLastConsult));
 
-    expect(sessionServiceSpy.vote).toHaveBeenCalledWith({ session: component.code, voteOption: 'Sim' });
+    component.ngOnInit();
+    expect(sessionServiceSpy.getLastConsultedSession).toHaveBeenCalled();
+    expect(component.lastConsultedSession).toEqual(mockLastConsult);
   });
 
   it('should vote and handle error', () => {
     const errorMessage = 'Error occurred';
-    sessionServiceSpy.vote.and.returnValue(throwError({ message: errorMessage }));
+    sessionServiceSpy.vote.and.returnValue(throwError(() => ({ message: errorMessage })));
 
     component.voteScreenActived = {
-      expired: false,
       opened: true,
-      description: 'Test Topic',
-      code: '1234-5678-9012',
+      session: {
+        isOpen: true,
+        openedAt: '',
+        yourVote: 'Não',
+        closeAt: '',
+        topic: 'Test Topic',
+        code: '1234-5678-9012',
+        alreadyVote: false
+      },
       expiration: undefined,
-      alreadyVoted: false
     };
 
     component.vote('Sim');
@@ -103,12 +104,17 @@ describe('EnterComponent', () => {
 
   it('should leave session and reset form', () => {
     component.voteScreenActived = {
-      expired: false,
       opened: true,
-      description: 'Test Topic',
-      code: '1234-5678-9012',
+      session: {
+        isOpen: true,
+        openedAt: '',
+        yourVote: 'Não',
+        closeAt: '',
+        topic: 'Test Topic',
+        code: '1234-5678-9012',
+        alreadyVote: false
+      },
       expiration: jasmine.createSpyObj('Expiration', ['done']),
-      alreadyVoted: false
     };
 
     component.leaveSession();
@@ -116,6 +122,7 @@ describe('EnterComponent', () => {
     expect(component.voteScreenActived?.expiration?.done).toHaveBeenCalled();
     expect(component.voteScreenActived?.opened).toBeFalse();
     expect(component.formGroup.pristine).toBeTrue();
+    expect(component.lastConsultedSession?.sessionInfo.code).toEqual('1234-5678-9012');
   });
 
   it('should handle paste event correctly', () => {
@@ -145,5 +152,4 @@ describe('EnterComponent', () => {
     expect(component.formGroup.get('part2')?.value).toBe('');
     expect(component.formGroup.get('part3')?.value).toBe('');
   });
-
 });

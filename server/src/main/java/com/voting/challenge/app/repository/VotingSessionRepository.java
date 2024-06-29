@@ -66,4 +66,7 @@ public interface VotingSessionRepository extends JpaRepository<VotingSession, UU
             " LEFT JOIN vote.votedBy voted " +
             " WHERE session.code = :code AND (voted.id = :member OR voted.id IS NULL)")
     VotingSessionInfo view(@Param("code") String code, @Param("member") String member);
+
+    @Query("SELECT vo.id FROM VotingSession vo WHERE vo.code = :code")
+    UUID getIdByCode(@Param("code") String code);
 }

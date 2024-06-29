@@ -41,4 +41,9 @@ describe('VotingSessionService', () => {
     expect(httpClientHelper.get).toHaveBeenCalledWith(Request.of({}));
   });
 
+  it('should call getLastConsultedSession', () => {
+    votingSessionService.getLastConsultedSession();
+    expect(httpClientHelper.get).toHaveBeenCalledWith(Request.of({ endpoint: 'last-consulted' }));
+  });
+
 });

@@ -1,19 +1,25 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Expiration } from '../../../shared/utils/expiration-utils';
 import { VotingSessionService } from '../../../shared/services/voting-session.service';
 import { ToastrService } from 'ngx-toastr';
+import { LastConsult } from '../../../model/last-consult';
+import { VotingSessionInfo } from '../../../model/voting-session-info';
 
 @Component({
   selector: 'app-enter',
   templateUrl: './enter.component.html',
   styleUrl: './enter.component.css'
 })
-export class EnterComponent implements OnDestroy {
+export class EnterComponent implements OnDestroy, OnInit {
 
-  threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
   formGroup: FormGroup;
-  voteScreenActived?: { expired: boolean, opened: boolean, description: string, code: string, expiration: Expiration | undefined, alreadyVoted: boolean };
+  voteScreenActived?: {
+    opened: boolean,
+    session?: VotingSessionInfo,
+    expiration: Expiration | undefined
+  };
+  lastConsultedSession?: LastConsult;
 
   get code() {
     return `${this.formGroup.get('part1')?.value}-${this.formGroup.get('part2')?.value}-${this.formGroup.get('part3')?.value}`
@@ -27,31 +33,51 @@ export class EnterComponent implements OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    this.getLastConsulted();
+  }
+
   ngOnDestroy(): void {
     if (this.voteScreenActived) {
       this.voteScreenActived.expiration?.done();
     }
   }
 
+  public getTimeSinceLastSession(): string {
+
+    if (!this.lastConsultedSession) {
+      return '';
+    }
+
+    const seconds = Math.floor((Date.now() - Date.parse(this.lastConsultedSession.consultedAt)) / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `Há ${days} dia${days > 1 ? 's' : ''}`;
+    } else if (hours > 0) {
+      return `Há ${hours} hora${hours > 1 ? 's' : ''}`;
+    } else if (minutes > 0) {
+      return `Há ${minutes} minuto${minutes > 1 ? 's' : ''}`;
+    } else {
+      return `Há ${seconds} segundo${seconds > 1 ? 's' : ''}`;
+    }
+  }
+
+  public enterLastSession() {
+    if(this.lastConsultedSession) this.initSession(this.lastConsultedSession.sessionInfo);
+  }
+
   public enterSession() {
-    this.sessionService.view(this.code).subscribe(session => {
-      this.voteScreenActived = {
-        code: this.code,
-        description: session.topic,
-        opened: true,
-        expiration: session.alreadyVote ? undefined : Expiration.create(Date.parse(session.closeAt)),
-        alreadyVoted: session.alreadyVote,
-        expired: !session.isOpen
-      };
-      this.voteScreenActived.expiration?.init();
-    });
+    this.sessionService.view(this.code).subscribe(session => this.initSession(session));
   }
 
   public vote(option: 'Sim' | 'Não') {
     this.sessionService.vote({ session: this.code, voteOption: option }).subscribe({
       next: () => {
-        if (this.voteScreenActived) {
-          this.voteScreenActived.alreadyVoted = true;
+        if (this.voteScreenActived && this.voteScreenActived.session) {
+          this.voteScreenActived.session.alreadyVote = true;
         }
       },
       error: (err) => this.toastrService.error(err['message'], 'Ocorreu um erro ao votar')
@@ -59,10 +85,14 @@ export class EnterComponent implements OnDestroy {
   }
 
   public leaveSession() {
-    if (this.voteScreenActived) {
+    if (this.voteScreenActived && this.voteScreenActived.session) {
       this.voteScreenActived.expiration?.done();
       this.voteScreenActived.opened = false;
       this.formGroup.reset();
+      this.lastConsultedSession = {
+        consultedAt: new Date().toISOString(),
+        sessionInfo: this.voteScreenActived.session
+      }
     }
   }
 
@@ -71,7 +101,6 @@ export class EnterComponent implements OnDestroy {
     const parts = data?.split('-');
     if (parts && parts?.length > 1) {
       this.pasteByHifen(parts);
-    } else {
     }
   }
 
@@ -83,6 +112,20 @@ export class EnterComponent implements OnDestroy {
         'part3': parts[2]
       });
     }
+  }
+
+  private initSession(session: VotingSessionInfo) {
+    this.voteScreenActived = {
+      opened: true,
+      session: session,
+      expiration: session.alreadyVote ? undefined : Expiration.create(Date.parse(session.closeAt)),
+    };
+    this.voteScreenActived.expiration?.init();
+  }
+
+  private getLastConsulted() {
+    this.sessionService.getLastConsultedSession()
+      .subscribe(session => this.lastConsultedSession = session);
   }
 
 }

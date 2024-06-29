@@ -38,3 +38,20 @@ h2 {
   font-size: 1.2rem;
   padding: 10px 20px;
 }
+
+.last-session-card {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 200px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+
+.last-session-card .card-body {
+  padding: 0.5rem;
+}
+
+.last-session-card .btn {
+  width: 100%;
+}

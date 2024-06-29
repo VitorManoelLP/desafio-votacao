@@ -8,6 +8,7 @@ import { CountReport } from "../../model/count-report";
 import { VoteRequest } from "../../model/vote-request";
 import { VotingSessionInfo } from "../../model/voting-session-info";
 import { SessionsByMember } from "../../model/sessions-by.member";
+import { LastConsult } from "../../model/last-consult";
 
 @Injectable()
 export class VotingSessionService {
@@ -34,6 +35,12 @@ export class VotingSessionService {
 
   public getSessions(): Observable<SessionsByMember> {
     return this.httpClient.get(Request.of({}))
+  }
+
+  public getLastConsultedSession(): Observable<LastConsult> {
+    return this.httpClient.get(Request.of({
+      endpoint: 'last-consulted'
+    }));
   }
 
 }

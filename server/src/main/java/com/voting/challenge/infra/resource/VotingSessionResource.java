@@ -1,9 +1,12 @@
 package com.voting.challenge.infra.resource;
 
+import java.util.Optional;
+
 import com.voting.challenge.app.interfaces.InitializeSession;
 import com.voting.challenge.app.interfaces.ReportVote;
 import com.voting.challenge.app.interfaces.SessionView;
 import com.voting.challenge.app.interfaces.VoteAct;
+import com.voting.challenge.app.repository.LastConsultedSessionRepository;
 import com.voting.challenge.domain.payload.*;
 import com.voting.challenge.infra.configuration.WebSecurityConfig;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,6 +36,11 @@ public class VotingSessionResource {
     public ResponseEntity<Void> vote(@RequestBody @Valid VoteRequest request) {
         voteAct.vote(request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/last-consulted")
+    public ResponseEntity<Optional<LastConsult>> getLastConsulted() {
+        return ResponseEntity.ok(sessionView.getLastConsult());
     }
 
     @GetMapping("/count/v1/{sessionCode}")

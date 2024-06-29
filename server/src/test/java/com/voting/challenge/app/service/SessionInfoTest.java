@@ -1,15 +1,21 @@
 package com.voting.challenge.app.service;
 
-import com.voting.challenge.domain.payload.SessionsByMember;
-import com.voting.challenge.domain.payload.VotingSessionInfo;
-import com.voting.challenge.extension.TestContainerExtension;
+import java.time.LocalDateTime;
+
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalDateTime;
+import com.voting.challenge.app.interfaces.MarkConsultedSession;
+import com.voting.challenge.app.repository.LastConsultedSessionRepository;
+import com.voting.challenge.app.repository.VotingSessionRepository;
+import com.voting.challenge.domain.payload.SessionsByMember;
+import com.voting.challenge.domain.payload.VotingSessionInfo;
+import com.voting.challenge.extension.TestContainerExtension;
 
 @Sql(statements = {
         "INSERT INTO keycloak.user_entity(id, username, email) VALUES('f3e15192-e428-4352-a240-bafa22eebd1e', 'foo', 'foo@gmail.com')",
@@ -23,8 +29,19 @@ import java.time.LocalDateTime;
 @WithMockUser(username = "f3e15192-e428-4352-a240-bafa22eebd1e")
 public class SessionInfoTest extends TestContainerExtension {
 
-    @Autowired
+    private final MarkConsultedSession markConsultedSession = Mockito.mock(MarkConsultedSession.class);
     private SessionInfo sessionInfo;
+
+    @Autowired
+    private VotingSessionRepository votingSessionRepository;
+
+    @BeforeEach
+    public void setup() {
+        sessionInfo = new SessionInfo(
+                votingSessionRepository,
+                markConsultedSession
+        );
+    }
 
     @Test
     public void view() {

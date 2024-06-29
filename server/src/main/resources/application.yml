@@ -1,6 +1,7 @@
 spring:
   flyway:
     schemas: voting
+    baselineOnMigrate: true
   application:
     name: voting
   jpa:
