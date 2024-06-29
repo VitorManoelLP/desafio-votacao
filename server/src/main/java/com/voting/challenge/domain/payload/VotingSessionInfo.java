@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public record VotingSessionInfo(@NotBlank String topic,
                                 @NotBlank String code,
-                                @NotBlank String isOpen,
+                                @NotBlank boolean isOpen,
                                 @NotNull boolean alreadyVote,
                                 @NotNull String yourVote,
                                 @NotNull LocalDateTime openedAt,
@@ -16,7 +16,7 @@ public record VotingSessionInfo(@NotBlank String topic,
 
     public VotingSessionInfo(@NotBlank String topic,
                              @NotBlank String code,
-                             @NotBlank String isOpen,
+                             @NotBlank boolean isOpen,
                              @NotNull boolean alreadyVote,
                              @NotNull VoteOption yourVote,
                              @NotNull LocalDateTime openedAt,

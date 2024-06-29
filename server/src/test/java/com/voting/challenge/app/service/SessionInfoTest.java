@@ -47,7 +47,7 @@ public class SessionInfoTest extends TestContainerExtension {
     public void view() {
         VotingSessionInfo info = sessionInfo.view("1111-2222-3333");
         Assertions.assertThat(info.topic()).isEqualTo("Yes or No?");
-        Assertions.assertThat(info.isOpen()).isEqualTo("Sim");
+        Assertions.assertThat(info.isOpen()).isTrue();
         Assertions.assertThat(info.openedAt()).isEqualTo(LocalDateTime.of(2024, 6, 19, 14, 30));
         Assertions.assertThat(info.closeAt()).isEqualTo(LocalDateTime.of(2050, 6, 19, 14, 30));
     }

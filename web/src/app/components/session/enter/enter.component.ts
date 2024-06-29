@@ -78,6 +78,7 @@ export class EnterComponent implements OnDestroy, OnInit {
       next: () => {
         if (this.voteScreenActived && this.voteScreenActived.session) {
           this.voteScreenActived.session.alreadyVote = true;
+          this.toastrService.success('Voto computado com sucesso. Obrigado por votar!')
         }
       },
       error: (err) => this.toastrService.error(err['message'], 'Ocorreu um erro ao votar')
@@ -89,10 +90,7 @@ export class EnterComponent implements OnDestroy, OnInit {
       this.voteScreenActived.expiration?.done();
       this.voteScreenActived.opened = false;
       this.formGroup.reset();
-      this.lastConsultedSession = {
-        consultedAt: new Date().toISOString(),
-        sessionInfo: this.voteScreenActived.session
-      }
+      this.getLastConsulted();
     }
   }
 

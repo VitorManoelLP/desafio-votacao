@@ -117,7 +117,7 @@ public class SessionInfo implements SessionView {
         VotingSessionInfo sessionInfo = new VotingSessionInfo(
                 session.getTopic().getDescription(),
                 session.getCode(),
-                session.isOpen() ? "Sim" : "Não",
+                session.isOpen(),
                 alreadyVote,
                 yourVote,
                 session.getStartTime(),

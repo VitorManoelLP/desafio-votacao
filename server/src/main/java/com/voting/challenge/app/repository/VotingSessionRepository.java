@@ -55,7 +55,7 @@ public interface VotingSessionRepository extends JpaRepository<VotingSession, UU
     @Query("SELECT new com.voting.challenge.domain.payload.VotingSessionInfo(" +
             "   topic.description," +
             "   session.code, " +
-            "   CASE WHEN session.isOpen THEN 'Sim' ELSE 'Não' END, " +
+            "   session.isOpen," +
             "   voted IS NOT NULL," +
             "   vote.vote, " +
             "   session.startTime, " +
