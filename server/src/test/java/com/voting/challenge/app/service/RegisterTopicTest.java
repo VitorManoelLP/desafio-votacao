@@ -19,7 +19,7 @@ import java.util.Optional;
 @Sql(statements = {
         "INSERT INTO keycloak.user_entity(id, username, email) VALUES('f3e15192-e428-4352-a240-bafa22eebd1e', 'foo', 'foo@gmail.com')"
 })
-@WithMockUser(username = "foo@gmail.com")
+@WithMockUser(username = "f3e15192-e428-4352-a240-bafa22eebd1e")
 public class RegisterTopicTest extends TestContainerExtension {
 
     @Autowired

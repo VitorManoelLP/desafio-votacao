@@ -28,7 +28,7 @@ import java.util.UUID;
         VALUES('45bedd4a-3c04-48e4-bc8b-bbdd779c03bd', '338b005a-18bc-40b0-9fb5-7cf00edf4d3a', '2024-06-19 14:30:00', '2024-06-19 14:30:00', '1111-2222-5555');
         """
 })
-@WithMockUser(username = "foocitizen@gmail.com")
+@WithMockUser(username = "cc4e1acc-830d-439d-9075-3323fa667cec")
 public class VoteActionTest extends TestContainerExtension {
 
     @Autowired

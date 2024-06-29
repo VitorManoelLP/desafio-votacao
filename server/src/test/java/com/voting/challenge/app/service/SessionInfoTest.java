@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
         VALUES('cb2e1a6d-7573-4a19-95c5-79bdc0a9925e', '338b005a-18bc-40b0-9fb5-7cf00edf4d3a', '2024-06-19 14:30:00', '2050-06-19 14:30:00', '1111-2222-3333');
         """
 })
-@WithMockUser(username = "foo@gmail.com")
+@WithMockUser(username = "f3e15192-e428-4352-a240-bafa22eebd1e")
 public class SessionInfoTest extends TestContainerExtension {
 
     @Autowired

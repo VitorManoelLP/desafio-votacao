@@ -23,7 +23,7 @@ import org.springframework.test.context.jdbc.Sql;
         "INSERT INTO voting.vote(id, id_session, voted_by, vote) VALUES('ca3b4850-6abe-47e7-88f5-207abb5b313f', 'cb2e1a6d-7573-4a19-95c5-79bdc0a9925e', 'd5e3f1a4-9c4d-432f-b2a2-333fae32d8b5', 'Sim')",
         "INSERT INTO voting.vote(id, id_session, voted_by, vote) VALUES('5321454a-5397-4289-979a-08c2b78d6137', 'cb2e1a6d-7573-4a19-95c5-79bdc0a9925e', 'a1b2c3d4-e5f6-7890-ab12-34cd567ef89a', 'Não')"
 })
-@WithMockUser(username = "foocitizen@gmail.com")
+@WithMockUser(username = "cc4e1acc-830d-439d-9075-3323fa667cec")
 public class VotingReportTest extends TestContainerExtension {
 
     @Autowired
