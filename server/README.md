@@ -40,6 +40,8 @@ Cada usuário (member) poderá votar uma única vez por sessão.
      npm i --force
      npm run start
    ```
+   > É necessário o --force por conta da utilização de bibliotecas diversas como: KeycloakJS, Keycloak Angular, Bootstrap 5, Font Awesome e o Ngx Toastr, o que por vezes não é suportado no Angular 18,
+   > apenas no 17 para baixo.
    
 ## Estrutura do projeto:
 
