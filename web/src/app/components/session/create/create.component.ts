@@ -26,7 +26,7 @@ export class CreateComponent {
 
     if (this.formGroup.get('expirationValue')?.value) payload.expiration = {
       value: this.formGroup.get('expirationValue')?.value,
-      expirationType: this.formGroup.get('expirationType')?.value
+      expirationType: this.formGroup.get('expirationType')?.value != '' ? this.formGroup.get('expirationType')?.value : 'MINUTES'
     };
 
     return payload;

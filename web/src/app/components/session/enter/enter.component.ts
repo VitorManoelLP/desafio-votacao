@@ -70,7 +70,10 @@ export class EnterComponent implements OnDestroy, OnInit {
   }
 
   public enterSession() {
-    this.sessionService.view(this.code).subscribe(session => this.initSession(session));
+    this.sessionService.view(this.code).subscribe({
+      next: session => this.initSession(session),
+      error: (err) => this.toastrService.error(err['error']['message'])
+    });
   }
 
   public vote(option: 'Sim' | 'Não') {
@@ -78,6 +81,7 @@ export class EnterComponent implements OnDestroy, OnInit {
       next: () => {
         if (this.voteScreenActived && this.voteScreenActived.session) {
           this.voteScreenActived.session.alreadyVote = true;
+          this.voteScreenActived.session.yourVote = option;
           this.toastrService.success('Voto computado com sucesso. Obrigado por votar!')
         }
       },
@@ -116,7 +120,7 @@ export class EnterComponent implements OnDestroy, OnInit {
     this.voteScreenActived = {
       opened: true,
       session: session,
-      expiration: session.alreadyVote ? undefined : Expiration.create(Date.parse(session.closeAt)),
+      expiration: Expiration.create(Date.parse(session.closeAt)),
     };
     this.voteScreenActived.expiration?.init();
   }

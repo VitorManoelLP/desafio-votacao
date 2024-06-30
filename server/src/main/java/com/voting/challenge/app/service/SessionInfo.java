@@ -1,5 +1,6 @@
 package com.voting.challenge.app.service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -35,6 +36,9 @@ public class SessionInfo implements SessionView {
         final String idUser = SecurityUtil.getIdUser();
         log.info("Viewing session with code: {} for user: {}", code, idUser);
         VotingSessionInfo sessionInfo = votingSessionRepository.view(code, idUser);
+        if (Objects.isNull(sessionInfo)) {
+            throw new IllegalArgumentException("Você não pode entrar em uma sessão criada por você mesmo.");
+        }
         log.info("Session info retrieved: {}", sessionInfo);
         markConsultedSession.mark(votingSessionRepository.getIdByCode(code));
         return sessionInfo;
@@ -54,7 +58,7 @@ public class SessionInfo implements SessionView {
     public Optional<LastConsult> getLastConsult() {
         final Optional<LastConsultedSessions> lastConsult = markConsultedSession.get();
         return lastConsult.map(consult -> {
-            final VotingSessionInfo view = votingSessionRepository.view(consult.getVotingSession().getCode(), consult.getViewer().getId());
+            final VotingSessionInfo view = votingSessionRepository.view(consult.getVotingSession().getCode(), SecurityUtil.getIdUser());
             return new LastConsult(view, consult.getConsultHour());
         });
     }

@@ -74,12 +74,13 @@
   <h1 class="mb-4">{{ voteScreenActived?.session?.topic }}</h1>
   <h2 class="mb-4">Tempo para expirar sessão</h2>
   <div id="timer" class="timer mb-4">
+    {{
+      voteScreenActived?.expiration ? voteScreenActived?.expiration?.value : "Expirado"
+    }}
+  </div>
+  <div id="result" class="mb-4">
     @if (voteScreenActived?.session?.alreadyVote) {
-      Você já votou nessa sessão, seu voto foi: {{ voteScreenActived?.session?.yourVote }}
-    } @else {
-      {{
-        voteScreenActived?.expiration ? voteScreenActived?.expiration?.value : "Expirado"
-      }}
+      <p class="fs-5">Você já votou nessa sessão, seu voto foi: {{ voteScreenActived?.session?.yourVote }}</p>
     }
   </div>
   <div class="button-panel d-flex justify-content-center">
