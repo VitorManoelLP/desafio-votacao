@@ -1,24 +1,35 @@
 import { WritableSignal, signal } from '@angular/core';
-import { Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { VotingSessionService } from '../../../../shared/services/voting-session.service';
 import { VotingSessionInfo } from '../../../../model/voting-session-info';
 import { Page } from '../../../../shared/model/page';
-import { Subscription } from 'rxjs';
 import { PageParameter } from '../../../../shared/model/page.parameter';
 import { FormControl } from '@angular/forms';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-session-list',
   templateUrl: './session-list.component.html',
-  styleUrl: './session-list.component.css'
+  styleUrl: './session-list.component.css',
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ transform: 'translateX(100%)', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }),
+        animate('300ms ease-in')
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ transform: 'translateX(-100%)', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }))
+      ])
+    ])
+  ]
 })
-export class SessionListComponent implements OnInit, OnDestroy {
+export class SessionListComponent implements OnInit {
 
-  @Input({ required: true })
-  refresh!: EventEmitter<'CREATED' | 'VOTED'>;
+  @Input() type!: 'CREATED' | 'VOTED';
 
   page?: Page<VotingSessionInfo>;
   typeSelected: 'CREATED' | 'VOTED' = 'CREATED';
+  detailSession?: string | null;
 
   get signalPage() {
     return this.onPageChange.asReadonly();
@@ -28,19 +39,12 @@ export class SessionListComponent implements OnInit, OnDestroy {
   pageParameter: PageParameter = PageParameter.withSize(5);
 
   private onPageChange: WritableSignal<Page<any> | null> = signal<Page<any> | null>(null);
-  private subscription?: Subscription;
 
   constructor(private sessionService: VotingSessionService) {
   }
 
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
   ngOnInit(): void {
-    this.subscription = this.refresh.subscribe(type => this.search(type))
+    this.search(this.type, '');
   }
 
   onFilter() {
@@ -60,4 +64,13 @@ export class SessionListComponent implements OnInit, OnDestroy {
       this.onPageChange.set(page);
     });
   }
+
+  hideDetail() {
+    this.detailSession = null;
+  }
+
+  detail(code: string) {
+    this.detailSession = code;
+  }
+
 }

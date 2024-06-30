@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadChildren: () => import('./components/session/session.module').then(m => m.SessionModule)
   },
   {
+    path: 'session-list',
+    loadChildren: () => import('./components/home/sessions/session-list/session-list.module').then(m => m.SessionListModule)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'

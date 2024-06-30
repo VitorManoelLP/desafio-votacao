@@ -49,14 +49,14 @@ public interface VotingSessionRepository extends JpaRepository<VotingSession, UU
     @Query("SELECT new com.voting.challenge.domain.payload.CountReport(" +
             "   topic.description, " +
             "   session.isOpen, " +
-            "   (ROUND(COUNT(CASE WHEN vote.vote = com.voting.challenge.enums.VoteOption.SIM THEN 1 END) * 100.0 / COUNT(vote)) || '%'), " +
-            "   (ROUND(COUNT(CASE WHEN vote.vote = com.voting.challenge.enums.VoteOption.NAO THEN 1 END) * 100.0 / COUNT(vote)) || '%'), " +
+            "   (ROUND(COUNT(CASE WHEN vote.vote = com.voting.challenge.enums.VoteOption.SIM THEN 1 END) * 100.0 / COALESCE(NULLIF(COUNT(vote), 0), 1)) || '%'), " +
+            "   (ROUND(COUNT(CASE WHEN vote.vote = com.voting.challenge.enums.VoteOption.NAO THEN 1 END) * 100.0 / COALESCE(NULLIF(COUNT(vote), 0), 1)) || '%'), " +
             "   COUNT(CASE WHEN vote.vote = com.voting.challenge.enums.VoteOption.SIM THEN 1 END), " +
             "   COUNT(CASE WHEN vote.vote = com.voting.challenge.enums.VoteOption.NAO THEN 1 END), " +
-            "   COUNT(vote)) " +
+            "   COALESCE(COUNT(vote), 0)) " +
             " FROM VotingSession session " +
             " JOIN session.topic topic " +
-            " JOIN session.votes vote " +
+            " LEFT JOIN session.votes vote " +
             " WHERE session.code = :code " +
             " GROUP BY topic.description, session.isOpen ")
     CountReport count(@Param("code") String code);

@@ -1,30 +1,30 @@
-import { SessionsByMember } from './../../model/sessions-by.member';
-import { Component, EventEmitter, OnInit } from '@angular/core';
-import Profile from '../../shared/model/profile';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { Modal } from 'bootstrap';
 import { VotingSessionService } from '../../shared/services/voting-session.service';
+import { SessionsByMember } from '../../model/sessions-by.member';
+import Profile from '../../shared/model/profile';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
 
   consultValue: 'CREATED' | 'VOTED' = 'CREATED';
-  onRefresh: EventEmitter<'CREATED' | 'VOTED'> = new EventEmitter();
-
   session?: SessionsByMember;
-
   profile: Profile = Profile.getInstance();
+  showModal: boolean = false;
 
-  constructor(private sessionService: VotingSessionService) {}
+  constructor(private sessionService: VotingSessionService, private router: Router) { }
 
   ngOnInit(): void {
     this.sessionService.getSessionsCount().subscribe(session => this.session = session);
   }
 
-  public togglePanel(panel: 'CREATED' | 'VOTED'): void {
-    this.onRefresh.emit(panel);
+  togglePanel(type: 'CREATED' | 'VOTED') {
+    this.router.navigateByUrl('session-list/' + type);
   }
 
 }

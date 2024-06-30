@@ -1,4 +1,8 @@
-<div class="container mt-5">
+<div
+  class="container mt-5"
+  *ngIf="!detailSession; else detailTemplate"
+  [@slideInOut]
+>
   <h2 class="mb-4">Sessões em que você votou</h2>
 
   <div class="input-group mb-3">
@@ -41,7 +45,10 @@
         <td>{{ content.yourVote }}</td>
         <td>{{ content.code }}</td>
         <td class="text-center">
-          <a class="btn btn-link" title="Detalhar"
+          <a
+            class="btn btn-link"
+            title="Detalhar"
+            (click)="detail(content.code)"
             ><i class="fa fa-arrow-circle-right"></i
           ></a>
         </td>
@@ -58,3 +65,9 @@
     (pageChanges)="pageChange($event)"
   />
 </div>
+
+<ng-template #detailTemplate>
+  <div [@slideInOut] *ngIf="detailSession">
+    <app-session-detail (goBack)="hideDetail()" [code]="detailSession"/>
+  </div>
+</ng-template>

@@ -54,6 +54,7 @@ public class SessionInfoTest extends TestContainerExtension {
     }
 
     @Test
+    @WithMockUser(username = "cc4e1acc-830d-439d-9075-3323fa667cec")
     public void view() {
         VotingSessionInfo info = sessionInfo.view("1111-2222-3333");
         Assertions.assertThat(info.topic()).isEqualTo("Yes or No?");

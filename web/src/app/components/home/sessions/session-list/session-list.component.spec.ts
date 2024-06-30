@@ -7,6 +7,7 @@ import { PageParameter } from '../../../../shared/model/page.parameter';
 import { EventEmitter } from '@angular/core';
 import { of } from 'rxjs';
 import { SessionListModule } from './session-list.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SessionListComponent', () => {
   let component: SessionListComponent;
@@ -18,7 +19,7 @@ describe('SessionListComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [SessionListComponent],
-      imports: [SessionListModule],
+      imports: [SessionListModule, BrowserAnimationsModule],
       providers: [
         { provide: VotingSessionService, useValue: spy }
       ]
@@ -27,7 +28,6 @@ describe('SessionListComponent', () => {
     fixture = TestBed.createComponent(SessionListComponent);
     component = fixture.componentInstance;
     votingSessionServiceSpy = TestBed.inject(VotingSessionService) as jasmine.SpyObj<VotingSessionService>;
-    component.refresh = new EventEmitter<'CREATED' | 'VOTED'>();
     fixture.detectChanges();
   });
 
@@ -38,13 +38,6 @@ describe('SessionListComponent', () => {
   it('should initialize with default values', () => {
     expect(component.typeSelected).toBe('CREATED');
     expect(component.formFilter.value).toBe('');
-  });
-
-  it('should subscribe to refresh EventEmitter on init', () => {
-    component.ngOnInit();
-    component.refresh.emit('VOTED');
-    fixture.detectChanges();
-    expect(component.typeSelected).toBe('VOTED');
   });
 
   it('should call search with filter value on filter', () => {

@@ -1,0 +1,32 @@
+<div class="container mt-5">
+  <div class="back-button-container">
+    <a class="btn btn-link d-flex align-items-center" (click)="onBack()">
+      <i class="fa fa-arrow-left me-2"></i>
+      Voltar
+    </a>
+  </div>
+
+
+  <div class="container mt-5" *ngIf="sessionDetailed">
+    <div class="card mt-3 shadow-sm">
+      <div class="card-header text-white">
+        <h3 class="text-center text-dark">{{ sessionDetailed.description }}</h3>
+      </div>
+      <div class="card-body">
+        <p><strong>Status:</strong> {{ sessionDetailed.isOpen ? 'Aberta' : 'Fechada' }}</p>
+        <div class="d-flex justify-content-around my-4">
+          <div class="text-center">
+            <h4 class="text-success">{{ sessionDetailed.percentYes }}</h4>
+            <p>Percentual votos sim: {{ sessionDetailed.countYes }}</p>
+          </div>
+          <div class="text-center">
+            <h4 class="text-danger">{{ sessionDetailed.percentNo }}</h4>
+            <p>Percentual votos não: {{ sessionDetailed.countNo }}</p>
+          </div>
+        </div>
+        <p><strong>Total Votos:</strong> {{ sessionDetailed.totalVotes }}</p>
+      </div>
+    </div>
+  </div>
+
+</div>

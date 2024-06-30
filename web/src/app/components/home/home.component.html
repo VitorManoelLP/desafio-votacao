@@ -6,7 +6,7 @@
       </div>
       <div class="card-body">
         <h5 class="card-title display-4">{{ session?.sessionsOpenedCount }}</h5>
-        <button class="btn btn-link" (click)="togglePanel('CREATED')" title="Consultar" data-bs-toggle="modal" data-bs-target="#consult">
+        <button class="btn btn-link" (click)="togglePanel('CREATED')">
           <i class="fa-2x fa fa fa-search"></i>
         </button>
       </div>
@@ -20,23 +20,10 @@
       </div>
       <div class="card-body">
         <h5 class="card-title display-4">{{ session?.sessionsVotedCount }}</h5>
-        <button class="btn btn-link" (click)="togglePanel('VOTED')" title="Consultar" data-bs-toggle="modal" data-bs-target="#consult">
+        <button class="btn btn-link" (click)="togglePanel('VOTED')" title="Consultar">
           <i
             class="fa-2x fa fa fa-search"></i>
         </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="consult" tabindex="-1" aria-labelledby="consultLabel" aria-hidden="true">
-  <div class="modal-dialog modal-fullscreen">
-    <div class="modal-content">
-      <div class="modal-body">
-        <app-session-list [refresh]="onRefresh"/>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" data-bs-target="#close" data-bs-toggle="modal">Fechar consulta</button>
       </div>
     </div>
   </div>
