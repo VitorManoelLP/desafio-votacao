@@ -1,0 +1,60 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Sessões em que você votou</h2>
+
+  <div class="input-group mb-3">
+    <input
+      type="text"
+      class="form-control"
+      [formControl]="formFilter"
+      (keydown.enter)="onFilter()"
+      placeholder="Digite o tópico que deseja filtrar"
+      aria-label="Pesquisar"
+      aria-describedby="button-filter"
+    />
+    <button
+      class="btn btn-primary"
+      type="button"
+      id="button-filter"
+      (click)="onFilter()"
+    >
+      <i class="fa fa-filter"></i> Filtrar
+    </button>
+  </div>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">Tópico da sessão</th>
+        <th scope="col">Criado em</th>
+        <th scope="col">Expira em</th>
+        <th scope="col">Seu voto</th>
+        <th scope="col">Código</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (content of page?.content; track $index) {
+      <tr>
+        <td>{{ content.topic }}</td>
+        <td>{{ content.openedAt | dataBR }}</td>
+        <td>{{ content.closeAt | dataBR }}</td>
+        <td>{{ content.yourVote }}</td>
+        <td>{{ content.code }}</td>
+        <td class="text-center">
+          <a class="btn btn-link" title="Detalhar"
+            ><i class="fa fa-arrow-circle-right"></i
+          ></a>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-paginator
+    [config]="{
+      onPageChange: signalPage,
+      itensPeerPage: [5, 10, 20, 50, 100]
+    }"
+    (pageChanges)="pageChange($event)"
+  />
+</div>

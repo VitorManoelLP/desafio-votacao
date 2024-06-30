@@ -1,5 +1,5 @@
 import { SessionsByMember } from './../../model/sessions-by.member';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import Profile from '../../shared/model/profile';
 import { VotingSessionService } from '../../shared/services/voting-session.service';
 
@@ -10,16 +10,8 @@ import { VotingSessionService } from '../../shared/services/voting-session.servi
 })
 export class HomeComponent implements OnInit {
 
-  readonly expansivePanel: { [key: string]: { opened: boolean, content: any[] } } = {
-    'CREATED_SESSION': {
-      opened: false,
-      content: []
-    },
-    'VOTED_SESSION': {
-      opened: false,
-      content: []
-    }
-  }
+  consultValue: 'CREATED' | 'VOTED' = 'CREATED';
+  onRefresh: EventEmitter<'CREATED' | 'VOTED'> = new EventEmitter();
 
   session?: SessionsByMember;
 
@@ -28,11 +20,11 @@ export class HomeComponent implements OnInit {
   constructor(private sessionService: VotingSessionService) {}
 
   ngOnInit(): void {
-    this.sessionService.getSessions().subscribe(session => this.session = session);
+    this.sessionService.getSessionsCount().subscribe(session => this.session = session);
   }
 
-  public togglePanel(panel: string): void {
-    this.expansivePanel[panel].opened = !this.expansivePanel[panel].opened;
+  public togglePanel(panel: 'CREATED' | 'VOTED'): void {
+    this.onRefresh.emit(panel);
   }
 
 }

@@ -1,5 +1,7 @@
 package com.voting.challenge.domain.payload;
 
+import com.voting.challenge.app.util.SecurityUtil;
+import com.voting.challenge.domain.VotingSession;
 import com.voting.challenge.enums.VoteOption;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,5 +24,19 @@ public record VotingSessionInfo(@NotBlank String topic,
                              @NotNull LocalDateTime openedAt,
                              @NotNull LocalDateTime closeAt) {
         this(topic, code, isOpen, alreadyVote, yourVote.getCaption(), openedAt, closeAt);
+    }
+
+    public static VotingSessionInfo of(VotingSession session) {
+        return new VotingSessionInfo(
+                session.getTopic().getDescription(),
+                session.getCode(),
+                session.isOpen(),
+                session.getVotes().stream().anyMatch(vote -> vote.getVotedBy().getId().equals(SecurityUtil.getIdUser())),
+                session.getVotes().stream().filter(vote -> vote.getVotedBy().getId().equals(SecurityUtil.getIdUser()))
+                        .findFirst()
+                        .map(vote -> vote.getVote().getCaption())
+                        .orElse(""),
+                session.getStartTime(),
+                session.getEndTime());
     }
 }

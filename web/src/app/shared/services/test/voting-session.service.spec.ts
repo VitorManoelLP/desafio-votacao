@@ -37,7 +37,7 @@ describe('VotingSessionService', () => {
   });
 
   it('should getSessions', () => {
-    votingSessionService.getSessions();
+    votingSessionService.getSessionsCount();
     expect(httpClientHelper.get).toHaveBeenCalledWith(Request.of({}));
   });
 

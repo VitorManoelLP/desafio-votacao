@@ -9,6 +9,8 @@ import { VoteRequest } from "../../model/vote-request";
 import { VotingSessionInfo } from "../../model/voting-session-info";
 import { SessionsByMember } from "../../model/sessions-by.member";
 import { LastConsult } from "../../model/last-consult";
+import { Page } from "../model/page";
+import { PageParameter } from "../model/page.parameter";
 
 @Injectable()
 export class VotingSessionService {
@@ -33,13 +35,20 @@ export class VotingSessionService {
     return this.httpClient.get(Request.of({ endpoint: `view/v1/${sessionCode}` }));
   }
 
-  public getSessions(): Observable<SessionsByMember> {
+  public getSessionsCount(): Observable<SessionsByMember> {
     return this.httpClient.get(Request.of({}))
   }
 
   public getLastConsultedSession(): Observable<LastConsult> {
     return this.httpClient.get(Request.of({
       endpoint: 'last-consulted'
+    }));
+  }
+
+  public getSessions(search: string, type: 'CREATED' | 'VOTED', page: PageParameter): Observable<Page<VotingSessionInfo>> {
+    return this.httpClient.get(Request.of({
+      endpoint: `${type}?search=${search}`,
+      page: page
     }));
   }
 

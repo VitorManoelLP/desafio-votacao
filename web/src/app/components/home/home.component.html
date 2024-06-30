@@ -6,16 +6,8 @@
       </div>
       <div class="card-body">
         <h5 class="card-title display-4">{{ session?.sessionsOpenedCount }}</h5>
-        <button class="btn btn-link" (click)="togglePanel('CREATED_SESSION')">
-          <i
-            class="fa-2x fa"
-            [ngClass]="{
-              'fa-angle-double-up': !expansivePanel['CREATED_SESSION'].opened,
-              'fa-angle-double-down': expansivePanel['CREATED_SESSION'].opened
-            }"
-            aria-hidden="true"
-            style="color: black"
-          ></i>
+        <button class="btn btn-link" (click)="togglePanel('CREATED')" title="Consultar" data-bs-toggle="modal" data-bs-target="#consult">
+          <i class="fa-2x fa fa fa-search"></i>
         </button>
       </div>
     </div>
@@ -28,17 +20,23 @@
       </div>
       <div class="card-body">
         <h5 class="card-title display-4">{{ session?.sessionsVotedCount }}</h5>
-        <button class="btn btn-link" (click)="togglePanel('VOTED_SESSION')">
+        <button class="btn btn-link" (click)="togglePanel('VOTED')" title="Consultar" data-bs-toggle="modal" data-bs-target="#consult">
           <i
-            class="fa-2x fa"
-            [ngClass]="{
-              'fa-angle-double-up': !expansivePanel['VOTED_SESSION'].opened,
-              'fa-angle-double-down': expansivePanel['VOTED_SESSION'].opened
-            }"
-            aria-hidden="true"
-            style="color: black"
-          ></i>
+            class="fa-2x fa fa fa-search"></i>
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="consult" tabindex="-1" aria-labelledby="consultLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-session-list [refresh]="onRefresh"/>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-bs-target="#close" data-bs-toggle="modal">Fechar consulta</button>
       </div>
     </div>
   </div>

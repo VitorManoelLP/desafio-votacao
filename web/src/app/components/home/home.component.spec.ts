@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { HomeComponent } from './home.component';
 import { VotingSessionService } from '../../shared/services/voting-session.service';
 import { SessionsByMember } from '../../model/sessions-by.member';
-import Profile from '../../shared/model/profile';
+import { HomeModule } from './home.module';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -11,10 +11,11 @@ describe('HomeComponent', () => {
   let sessionServiceSpy: jasmine.SpyObj<VotingSessionService>;
 
   beforeEach(async () => {
-    const sessionSpy = jasmine.createSpyObj('VotingSessionService', ['getSessions']);
+    const sessionSpy = jasmine.createSpyObj('VotingSessionService', ['getSessionsCount']);
 
     await TestBed.configureTestingModule({
       declarations: [HomeComponent],
+      imports: [HomeModule],
       providers: [
         { provide: VotingSessionService, useValue: sessionSpy }
       ]
@@ -30,27 +31,6 @@ describe('HomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize profile and expansivePanel correctly', () => {
-    expect(component.profile).toBe(Profile.getInstance());
-    expect(component.expansivePanel).toEqual({
-      'CREATED_SESSION': {
-        opened: false,
-        content: []
-      },
-      'VOTED_SESSION': {
-        opened: false,
-        content: []
-      }
-    });
-  });
-
-  it('should toggle panel state correctly', () => {
-    component.togglePanel('CREATED_SESSION');
-    expect(component.expansivePanel['CREATED_SESSION'].opened).toBeTrue();
-
-    component.togglePanel('CREATED_SESSION');
-    expect(component.expansivePanel['CREATED_SESSION'].opened).toBeFalse();
-  });
 
   it('should fetch sessions on init', () => {
     const mockSessions: SessionsByMember = {
@@ -58,12 +38,12 @@ describe('HomeComponent', () => {
       votedSessions: []
     } as unknown as SessionsByMember;
 
-    sessionServiceSpy.getSessions.and.returnValue(of(mockSessions));
+    sessionServiceSpy.getSessionsCount.and.returnValue(of(mockSessions));
 
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(sessionServiceSpy.getSessions).toHaveBeenCalled();
+    expect(sessionServiceSpy.getSessionsCount).toHaveBeenCalled();
     expect(component.session).toEqual(mockSessions);
   });
 });

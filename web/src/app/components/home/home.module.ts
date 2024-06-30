@@ -4,6 +4,8 @@ import { HomeComponent } from './home.component';
 import { Route, RouterModule } from '@angular/router';
 import { VotingSessionService } from '../../shared/services/voting-session.service';
 import { HttpClientHelper } from '../../shared/client/http-client';
+import { SessionListModule } from './sessions/session-list/session-list.module';
+import { PipeModule } from '../../shared/pipe/pipe.module';
 
 const routes: Route = {
   path: '',
@@ -16,6 +18,8 @@ const routes: Route = {
   ],
   imports: [
     CommonModule,
+    SessionListModule,
+    PipeModule,
     RouterModule.forChild([routes])
   ],
   providers: [

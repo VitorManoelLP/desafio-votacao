@@ -3,7 +3,12 @@ package com.voting.challenge.app.repository;
 import com.voting.challenge.domain.VotingSession;
 import com.voting.challenge.domain.payload.CountReport;
 import com.voting.challenge.domain.payload.VotingSessionInfo;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,20 +18,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface VotingSessionRepository extends JpaRepository<VotingSession, UUID> {
+public interface VotingSessionRepository extends JpaRepository<VotingSession, UUID>, JpaSpecificationExecutor<VotingSession> {
 
     @Query("SELECT session FROM VotingSession session " +
             " JOIN session.topic topic " +
             " WHERE session.code = :code AND topic.owner.id <> :member ")
     Optional<VotingSession> findByCodeExceptOwnerBy(@Param("code") String code, @Param("member") String member);
 
-    @Query("SELECT session FROM VotingSession session " +
+    @Query("SELECT COUNT(session) FROM VotingSession session " +
+            " JOIN session.votes vote " +
+            " JOIN vote.votedBy voted " +
+            " WHERE voted.id = :idUser")
+    Long countSessionsVoted(@Param("idUser") String idUser);
+
+    @Query("SELECT COUNT(session) FROM VotingSession session " +
             " JOIN session.topic topic " +
-            " LEFT JOIN session.votes vote " +
-            " LEFT JOIN vote.votedBy voted " +
             " JOIN topic.owner owner " +
-            "WHERE (owner.id = :idUser OR voted.id = :idUser)")
-    List<VotingSession> findAllSessionsByMember(@Param("idUser") String idUser);
+            " WHERE owner.id = :idUser")
+    Long countSessionsCreated(@Param("idUser") String idUser);
 
     @Query("SELECT COUNT(session) = 0 FROM VotingSession session " +
             " JOIN session.topic topic " +
@@ -64,7 +73,7 @@ public interface VotingSessionRepository extends JpaRepository<VotingSession, UU
             " JOIN session.topic topic " +
             " LEFT JOIN session.votes vote " +
             " LEFT JOIN vote.votedBy voted " +
-            " WHERE session.code = :code AND (voted.id = :member OR voted.id IS NULL)")
+            " WHERE session.code = :code AND (voted.id = :member OR topic.owner.id = :member)")
     VotingSessionInfo view(@Param("code") String code, @Param("member") String member);
 
     @Query("SELECT vo.id FROM VotingSession vo WHERE vo.code = :code")
