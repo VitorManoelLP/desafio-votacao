@@ -16,13 +16,13 @@ export class Expiration {
     return new Expiration(end);
   }
 
-  init() {
+  init(callback?: Function) {
     this.intervalReference = setInterval(() => {
       const distance = this.end - Date.now();
 
-
       if (distance < 0) {
         this.done();
+        if (callback) callback();
         this._value = 'Expirado';
         return;
       }
@@ -33,6 +33,9 @@ export class Expiration {
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       this._value = `${this.pad(days)}:${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)}`;
+
+      if (callback) callback();
+
     }, this.oneSecond);
   }
 

@@ -20,6 +20,7 @@ export class EnterComponent implements OnDestroy, OnInit {
     expiration: Expiration | undefined
   };
   lastConsultedSession?: LastConsult;
+  isLoadingTimerCalculation: boolean = true;
 
   get code() {
     return `${this.formGroup.get('part1')?.value}-${this.formGroup.get('part2')?.value}-${this.formGroup.get('part3')?.value}`
@@ -94,6 +95,7 @@ export class EnterComponent implements OnDestroy, OnInit {
       this.voteScreenActived.expiration?.done();
       this.voteScreenActived.opened = false;
       this.formGroup.reset();
+      this.isLoadingTimerCalculation = true;
       this.getLastConsulted();
     }
   }
@@ -122,7 +124,7 @@ export class EnterComponent implements OnDestroy, OnInit {
       session: session,
       expiration: Expiration.create(Date.parse(session.closeAt)),
     };
-    this.voteScreenActived.expiration?.init();
+    this.voteScreenActived.expiration?.init(() => this.isLoadingTimerCalculation = false);
   }
 
   private getLastConsulted() {

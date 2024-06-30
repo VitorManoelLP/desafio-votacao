@@ -74,9 +74,15 @@
   <h1 class="mb-4">{{ voteScreenActived?.session?.topic }}</h1>
   <h2 class="mb-4">Tempo para expirar sessão</h2>
   <div id="timer" class="timer mb-4">
-    {{
-      voteScreenActived?.expiration ? voteScreenActived?.expiration?.value : "Expirado"
-    }}
+    @if (voteScreenActived?.expiration != undefined) {
+
+      @if (isLoadingTimerCalculation) {
+        <i class="fa fa-spinner fa-pulse fa-2x fa-fw" aria-hidden="true"></i>
+      } @else {
+        {{ voteScreenActived?.expiration?.value }}
+      }
+
+    }
   </div>
   <div id="result" class="mb-4">
     @if (voteScreenActived?.session?.alreadyVote) {
