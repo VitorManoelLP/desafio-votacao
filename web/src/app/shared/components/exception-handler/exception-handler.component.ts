@@ -27,4 +27,8 @@ export class ExceptionHandlerComponent {
     });
   }
 
+  close() {
+    this.modalProperties.message = '';
+  }
+
 }

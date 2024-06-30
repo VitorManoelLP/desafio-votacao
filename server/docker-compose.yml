@@ -57,6 +57,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       KEYCLOAK_AUTH_SERVER_URL: http://keycloak:8080
       KEYCLOAK_REALM: VOTING
+      TZ: America/Sao_Paulo
     ports:
       - 3000:3000
     depends_on:
