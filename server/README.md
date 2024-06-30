@@ -9,16 +9,17 @@ Cada usuário (member) poderá votar uma única vez por sessão.
 - Java 17;
 - Spring boot 3.3.0;
 - GraalVM;
-- PostgreSQL.
+- PostgreSQL;
+- Node 18
   
 ### Bibliotecas/Frameworks usados
-- jjwt: para manipulação de tokens;
 - flyway: para controlar as migrações no banco de dados;
 - openapi: para documentar a aplicação usando Swagger UI;
 - lombok: para diminuir o boilerplate do projeto;
 - junit 5: para realização dos testes automatizados;
 - Testcontainer: para realizar teste integrado com maior fidelidade da aplicação, mantendo o postgreSQL como DBMS e não usando um banco em memória como o H2;
-- Spring Boot Pacotes: Logging, Hibernate Validator, Security, JPA, DevTools, entre outros (detalhados no build.gradle).
+- Spring Boot Pacotes: Logging, Hibernate Validator, Security, JPA, DevTools, entre outros (detalhados no build.gradle);
+- Keycloak: Autenticação e segurança.
 
 ## Como subir a aplicação
 
@@ -27,21 +28,50 @@ Cada usuário (member) poderá votar uma única vez por sessão.
      git clone https://github.com/VitorManoelLP/desafio-votacao.git
    ```
 2. No arquivo server/.env tem uma variável POSTGRES_VOLUME, coloque nela uma pasta para ser usada como volume do container postgreSQL. **Crie um pasta somente para esse propósito**. 
-3. Na pasta _server_ há um _docker compose_ que sobe um _container PostgreSQL_ e a própria aplicação, basta entrar na pasta e digitar:
+3. Na pasta _server_ há um _docker compose_ que sobe um _container PostgreSQL_, _keycloak_ e a própria aplicação, basta entrar na pasta e digitar:
    ```bash
      docker compose up
    ```
 4. Acesse a URL <http://localhost:8080/swagger-ui/index.html> para ver todos os _endpoints_ disponíveis.
    Lembre-se de que apenas os _endpoints_ de "Auth" podem ser usados sem a necessidade de um _token_ JWT.
    Para os demais será necessário vincular o _token_ no próprio Swagger.
+5. Para subir o frontend basta ir para pasta web e rodar os comandos:
+   ```bash
+     npm i --force
+     npm run start
+   ```
+   > É necessário o --force por conta da utilização de bibliotecas diversas como: KeycloakJS, Keycloak Angular, Bootstrap 5, Font Awesome e o Ngx Toastr, o que por vezes não é suportado no Angular 18,
+   > apenas no 17 para baixo.
    
 ## Estrutura do projeto:
+
+### Backend
 
 - **.gitignore**: Lista de arquivos e pastas a serem ignorados pelo Git;
 - **src/**: Diretório contendo o código-fonte do projeto;
 - **tests/**: Diretório contendo os testes do projeto.
 
-### Estrutura interna (dentro da main)
+### Frontend
+
+- **.components**: Lista dos principais componentes do sistema;
+- **.model**: Onde todas as interfaces relacionadas a regra de negócio estão salvas;
+- **.shared**: Onde o core da aplicação está salvo, no qual se subdivide em:
+  - **.client**: Http Client helper para auxiliar na montagem de endpoints;
+  - **.components**: Componentes abstratos para reutilização como: paginação e navbar;
+  - **.configuration**: Classe de configuração do keycloak para ser sobrescrito em casos de deploy;
+  - **.directive**: Diretivas do angular, nesse caso tem apenas o formValidate que serve para automaticamente colocar _span_ de erro abaixo do input;
+  - **.environments**: Serve para ser usado juntamente com os itens do pacote _configuration_ para alternar a configuração conforme o ambiente;
+  - **.model**: Modelos genéricos para reutilização como: page, pageParameters etc...;
+  - **.pipe**: Pipelines, nesse caso, apenas o dateBR para formatação automática de data/hora;
+  - **.security**: Onde está armazenado o keycloak interceptor e a sobrecarga do KeycloakService para se autoconfigurar;
+  - **.services**: Serve para armazenar todos os serviços da aplicação;
+  - **.utils**: classes utilitárias.
+
+### CICD
+
+- O CI/CD foi cadastrado para facilitar o feedback de possíveis problemas em branchs, visto que toda a aplicação foi feita em TDD, o feedback após o push de qualquer possível falha é imprescindível para consistência nesse caso.
+
+### Estrutura interna do backend (dentro da main)
 
 - **/app**: Responsável por armazenar dados mais internos do sistema como serviços, repositórios, interfaces e classes utilitárias;
 - **/domain**: Usado para armazenar apenas classes de domìnio e DTOs (package payload);
@@ -64,7 +94,8 @@ Optei por usar PostgreSQL devido à simplicidade da regra de negócio que requer
 
 ### Autenticação
 
-A autenticação poderia ser implementada de maneira mais simplificada usando Keycloak, OAuth2 ou soluções similares. No entanto, como a estrutura é vinculada apenas ao backend, decidi implementar algo mais manual para exemplificar o uso do Spring Security puro.
+Autenticação implementada usando Keycloak a fim de tornar a autenticação mais precisa e flexivel, além das vantagens como: Multi-realm, Single Sign-On etc.... Optei por não colocar
+polices nas senhas para facilitar o teste, mas é recomendado que seja colocado em ambientes restritos.
 
 ### Uso de _Cache_
 
@@ -85,7 +116,6 @@ Utilizei o GraalVM para aumentar a resiliência da aplicação, permitindo uma r
 ### Possíveis Melhorias
 
 Para um ambiente de produção, algumas melhorias seriam recomendadas:
-- Uso de um framework de autenticação, como Keycloak, para maior segurança e Single Sign-On (SSO).
 - Implementação de _caches_ para reduzir conexões desnecessárias ao banco de dados, como na apuração de sessões fechadas (avaliar o custo).
 - Uso de WebSockets para notificar o dono e os membros sobre novos votos ou fechamento de sessões em tempo real.
 - Implementação de uma ferramenta como Jasper para gerar relatórios mais robustos e detalhados em PDF, conforme necessidade do cliente.
