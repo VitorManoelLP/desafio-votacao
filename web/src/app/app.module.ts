@@ -10,6 +10,9 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { KeycloakInterceptor } from './shared/security/keycloak.interceptor';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ExceptionHandlerModule } from './shared/components/exception-handler/exception-handler.module';
+import { ErrorHandlerService } from './shared/services/error-handler.service';
+import { ExceptionHandlerService } from './shared/services/exception-handler.service';
 
 
 @NgModule({
@@ -21,6 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     NavbarComponent,
     AppRoutingModule,
+    ExceptionHandlerModule,
     KeycloakAngularModule,
     HttpClientModule,
     ToastrModule.forRoot()
@@ -30,6 +34,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       provide: HTTP_INTERCEPTORS,
       useClass: KeycloakInterceptor,
       multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorHandlerService,
+      multi: true,
+      deps: [ExceptionHandlerService]
     }
   ],
   bootstrap: [AppComponent]
