@@ -30,7 +30,7 @@ public class SessionSpecificationSearch implements Specification<VotingSession> 
         filters.add(factory.onFilter(root, query, criteriaBuilder));
         if (StringUtils.isNotEmpty(search)) {
             Join<Object, Object> topic = root.join("topic");
-            final Predicate searchTopic = criteriaBuilder.like(criteriaBuilder.lower(topic.get("description")), search.toLowerCase().concat("%"));
+            final Predicate searchTopic = criteriaBuilder.like(criteriaBuilder.lower(topic.get("description")), "%".concat(search.toLowerCase().concat("%")));
             filters.add(searchTopic);
         }
         return criteriaBuilder.and(filters.toArray(new Predicate[0]));
