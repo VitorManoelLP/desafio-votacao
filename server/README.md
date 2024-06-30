@@ -67,6 +67,10 @@ Cada usuário (member) poderá votar uma única vez por sessão.
   - **.services**: Serve para armazenar todos os serviços da aplicação;
   - **.utils**: classes utilitárias.
 
+### CICD
+
+- O CI/CD foi cadastrado para facilitar o feedback de possíveis problemas em branchs, visto que toda a aplicação foi feita em TDD, o feedback após o push de qualquer possível falha é imprescindível para consistência nesse caso.
+
 ### Estrutura interna do backend (dentro da main)
 
 - **/app**: Responsável por armazenar dados mais internos do sistema como serviços, repositórios, interfaces e classes utilitárias;
