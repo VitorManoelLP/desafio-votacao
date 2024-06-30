@@ -94,8 +94,8 @@ Optei por usar PostgreSQL devido à simplicidade da regra de negócio que requer
 
 ### Autenticação
 
-Autenticação implementada usando Keycloak a fim de tornar a autenticação mais precisa e flexivel, além das vantagens como: Multi-realm, Single Sign-On etc.... Optei por não colocar
-polices nas senhas para facilitar o teste, mas é recomendado que seja colocado em ambientes restritos.
+A autenticação é implementada usando Keycloak a fim de torná-la mais precisa e flexivel, além das vantagens como: Multi-realm, Single Sign-On etc.... Optei por não colocar
+_polices_ nas senhas para facilitar o teste, mas é recomendado que seja colocado em ambientes restritos.
 
 ### Uso de _Cache_
 
